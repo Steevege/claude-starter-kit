@@ -22,8 +22,26 @@
 - **Context7** : Documentation à jour des bibliothèques
   - Utiliser AUTOMATIQUEMENT pour toute génération de code
   - Ne jamais se fier uniquement aux données d'entraînement
-- **Playwright** : Tests et navigation web
+- **Playwright MCP** : Tests et navigation web
+  - ✅ Configuré au niveau utilisateur (scope: user)
+  - Commande : `npx -y @playwright/mcp@latest`
   - Utiliser pour valider chaque interface graphique
+  - Redémarrer Claude Code si MCP non chargé
+  - Reconfigurer si besoin : `claude mcp add playwright --scope user -- npx -y @playwright/mcp@latest`
+
+### Skills Recommandés
+- **`/interview`** : Découverte et cadrage projet (Phase 1)
+- **`/frontend-design`** : Création d'interfaces responsive et accessibles
+- **`/webapp-testing`** : Tests complémentaires Playwright
+- **`/doc-coauthoring`** : Co-rédaction de @PRD.md et @ARCHITECTURE.md
+- **`/skill-creator`** : Créer des skills custom pour workflows récurrents
+- **`/mcp-builder`** : Si besoin de MCP servers custom
+
+### Agents (Automatiques)
+Les agents suivants sont utilisés automatiquement selon le contexte :
+- **Explore** : Recherche approfondie dans le codebase (>3 queries)
+- **Plan** : Mode planification (`Shift+Tab`)
+- **Bash** : Opérations Git et système
 
 ## 🎯 Workflow Standard
 
