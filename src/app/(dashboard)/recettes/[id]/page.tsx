@@ -5,7 +5,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowLeft, Clock, Edit, Trash2, ChefHat } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
@@ -91,23 +90,12 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
       </div>
 
       {/* Image principale */}
-      {recipeTyped.image_url ? (
-        <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-accent/30">
-          <Image
-            src={recipeTyped.image_url}
-            alt={recipeTyped.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      ) : (
-        <GenerateImageButton
-          recipeId={recipeTyped.id}
-          title={recipeTyped.title}
-          category={recipeTyped.category}
-        />
-      )}
+      <GenerateImageButton
+        recipeId={recipeTyped.id}
+        title={recipeTyped.title}
+        category={recipeTyped.category}
+        imageUrl={recipeTyped.image_url}
+      />
 
       {/* Titre et badges */}
       <div className="space-y-3">
