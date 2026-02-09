@@ -1,0 +1,98 @@
+/**
+ * Types TypeScript pour le modèle de données des recettes
+ */
+
+// Catégories de recettes (11 catégories)
+export type RecipeCategory =
+  | 'apero'
+  | 'entree'
+  | 'plat'
+  | 'accompagnement'
+  | 'sauce'
+  | 'dessert'
+  | 'boisson'
+  | 'petit_dejeuner'
+  | 'gouter'
+  | 'pain_viennoiserie'
+  | 'conserve'
+
+// Difficulté de la recette
+export type RecipeDifficulty = 'facile' | 'moyen' | 'difficile'
+
+// Type de source d'import
+export type RecipeSourceType = 'manual' | 'url' | 'paste' | 'photo'
+
+// Ingrédient individuel
+export interface Ingredient {
+  name: string
+  quantity?: number
+  unit?: string
+  note?: string // Ex: "T55" pour farine, "bien mûres" pour bananes
+}
+
+// Groupe d'ingrédients (optionnel)
+export interface IngredientGroup {
+  group?: string // Ex: "Pâte", "Garniture", "Sauce"
+  items: Ingredient[]
+}
+
+// Étape de préparation
+export interface RecipeStep {
+  order: number
+  instruction: string
+  duration?: number // En minutes
+}
+
+// Métadonnées de la recette
+export interface RecipeMetadata {
+  prep_time?: number // Temps de préparation en minutes
+  cook_time?: number // Temps de cuisson en minutes
+  servings?: number // Nombre de portions
+  difficulty?: RecipeDifficulty
+  source_url?: string // URL source si importé depuis le web
+}
+
+// Recette complète (correspond à la table recipes)
+export interface Recipe {
+  id: string
+  user_id: string
+  title: string
+  category: RecipeCategory
+  ingredients: IngredientGroup[]
+  steps: RecipeStep[]
+  metadata: RecipeMetadata
+  image_url: string | null
+  source_type: RecipeSourceType
+  is_favorite: boolean
+  tags: string[]
+  created_at: string
+  updated_at: string
+}
+
+// Type pour création de recette (sans id, user_id, timestamps)
+export type RecipeInsert = Omit<Recipe, 'id' | 'user_id' | 'created_at' | 'updated_at'>
+
+// Type pour mise à jour de recette (tous champs optionnels sauf id)
+export type RecipeUpdate = Partial<RecipeInsert> & { id: string }
+
+// Labels lisibles pour les catégories
+export const RECIPE_CATEGORY_LABELS: Record<RecipeCategory, string> = {
+  apero: 'Apéritif',
+  entree: 'Entrée',
+  plat: 'Plat principal',
+  accompagnement: 'Accompagnement',
+  sauce: 'Sauce',
+  dessert: 'Dessert',
+  boisson: 'Boisson',
+  petit_dejeuner: 'Petit-déjeuner',
+  gouter: 'Goûter',
+  pain_viennoiserie: 'Pain & Viennoiserie',
+  conserve: 'Conserve',
+}
+
+// Labels lisibles pour les difficultés
+export const RECIPE_DIFFICULTY_LABELS: Record<RecipeDifficulty, string> = {
+  facile: 'Facile',
+  moyen: 'Moyen',
+  difficile: 'Difficile',
+}
