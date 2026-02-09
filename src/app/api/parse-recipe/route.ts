@@ -148,7 +148,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const html = await response.text()
+    // Décoder le HTML avec le bon charset (beaucoup de sites FR sont en ISO-8859-1)
+    const contentType = response.headers.get('content-type') || ''
+    const charsetMatch = contentType.match(/charset=([^\s;]+)/i)
+    let html: string
+
+    if (charsetMatch && charsetMatch[1].toLowerCase() !== 'utf-8') {
+      // Charset explicite non-UTF-8 → décoder avec TextDecoder
+      const buffer = await response.arrayBuffer()
+      const decoder = new TextDecoder(charsetMatch[1], { fatal: false })
+      html = decoder.decode(buffer)
+    } else {
+      // UTF-8 par défaut, mais vérifier les caractères cassés
+      const buffer = await response.arrayBuffer()
+      html = new TextDecoder('utf-8', { fatal: false }).decode(buffer)
+
+      // Si on détecte un meta charset non-UTF-8, re-décoder
+      const metaCharsetMatch = html.match(/<meta[^>]+charset=["']?([^"'\s;>]+)/i)
+      if (metaCharsetMatch && metaCharsetMatch[1].toLowerCase() !== 'utf-8') {
+        try {
+          const decoder = new TextDecoder(metaCharsetMatch[1], { fatal: false })
+          html = decoder.decode(buffer)
+        } catch {
+          // Charset inconnu, garder l'UTF-8
+        }
+      }
+    }
 
     // Essayer d'abord le parsing JSON-LD déterministe
     const result = parseRecipeFromHtml(html, parsedUrl.toString())
