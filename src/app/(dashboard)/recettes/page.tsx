@@ -14,10 +14,10 @@ import { Separator } from '@/components/ui/separator'
 import type { Recipe } from '@/lib/types/recipe'
 
 interface RecettesPageProps {
-  searchParams: {
+  searchParams: Promise<{
     category?: string
     search?: string
-  }
+  }>
 }
 
 export default async function RecettesPage({ searchParams }: RecettesPageProps) {
@@ -32,6 +32,9 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
     redirect('/login')
   }
 
+  // Await searchParams (Next.js 15+)
+  const params = await searchParams
+
   // Query recipes avec filtres
   let query = supabase
     .from('recipes')
@@ -40,13 +43,13 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
     .order('created_at', { ascending: false })
 
   // Filtre catégorie
-  if (searchParams.category) {
-    query = query.eq('category', searchParams.category)
+  if (params.category) {
+    query = query.eq('category', params.category)
   }
 
   // Filtre recherche (titre)
-  if (searchParams.search) {
-    query = query.ilike('title', `%${searchParams.search}%`)
+  if (params.search) {
+    query = query.ilike('title', `%${params.search}%`)
   }
 
   const { data: recipes, error } = await query

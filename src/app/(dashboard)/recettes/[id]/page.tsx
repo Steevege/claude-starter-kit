@@ -16,9 +16,9 @@ import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface RecipeDetailPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function RecipeDetailPage({ params }: RecipeDetailPageProps) {
@@ -33,11 +33,14 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
     redirect('/login')
   }
 
+  // Await params (Next.js 15+)
+  const { id } = await params
+
   // Récupérer la recette
   const { data: recipe, error } = await supabase
     .from('recipes')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('user_id', user.id)
     .single()
 
@@ -61,7 +64,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
         </Link>
 
         <div className="flex gap-2">
-          <Link href={`/recettes/${params.id}/edit`}>
+          <Link href={`/recettes/${id}/edit`}>
             <Button variant="outline" size="sm">
               <Edit className="w-4 h-4 mr-2" />
               Modifier
