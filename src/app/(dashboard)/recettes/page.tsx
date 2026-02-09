@@ -4,8 +4,23 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { Plus } from 'lucide-react'
 
-export default async function RecettesPage() {
+import { RecipeGrid } from '@/components/recipes/recipe-grid'
+import { RecipeFilters } from '@/components/recipes/recipe-filters'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import type { Recipe } from '@/lib/types/recipe'
+
+interface RecettesPageProps {
+  searchParams: {
+    category?: string
+    search?: string
+  }
+}
+
+export default async function RecettesPage({ searchParams }: RecettesPageProps) {
   const supabase = await createClient()
 
   // Vérifier l'authentification
@@ -17,23 +32,59 @@ export default async function RecettesPage() {
     redirect('/login')
   }
 
+  // Query recipes avec filtres
+  let query = supabase
+    .from('recipes')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+
+  // Filtre catégorie
+  if (searchParams.category) {
+    query = query.eq('category', searchParams.category)
+  }
+
+  // Filtre recherche (titre)
+  if (searchParams.search) {
+    query = query.ilike('title', `%${searchParams.search}%`)
+  }
+
+  const { data: recipes, error } = await query
+
+  if (error) {
+    console.error('Erreur récupération recettes:', error)
+  }
+
+  const recipesTyped = (recipes || []) as Recipe[]
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Mes Recettes</h1>
-        <p className="mt-2 text-gray-600">
-          Bienvenue {user.email} ! Vous êtes connecté.
-        </p>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Mes Recettes</h1>
+          <p className="mt-1 text-gray-600">
+            {recipesTyped.length} {recipesTyped.length > 1 ? 'recettes' : 'recette'}
+          </p>
+        </div>
+
+        <Link href="/recettes/new">
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Nouvelle recette
+          </Button>
+        </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-gray-600">
-          La liste des recettes sera affichée ici.
-        </p>
-        <p className="mt-4 text-sm text-gray-500">
-          Prochaines étapes : créer les composants pour afficher et gérer les recettes.
-        </p>
-      </div>
+      <Separator />
+
+      {/* Filtres */}
+      <RecipeFilters />
+
+      <Separator />
+
+      {/* Grille de recettes */}
+      <RecipeGrid recipes={recipesTyped} />
     </div>
   )
 }
