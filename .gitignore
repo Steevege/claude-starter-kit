@@ -36,3 +36,4 @@ logs/
 # Ne PAS ignorer
 !.env.example
 !.claude/
+.vercel
