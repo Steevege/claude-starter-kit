@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * Composant carte recette pour affichage en grille
  */
@@ -11,6 +13,7 @@ import { RECIPE_CATEGORY_LABELS } from '@/lib/types/recipe'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
+import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
 import { cn } from '@/lib/utils'
 
 interface RecipeCardProps {
@@ -64,6 +67,20 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
               recipeId={recipe.id}
               isFavorite={recipe.is_favorite}
               size="sm"
+            />
+          </div>
+
+          {/* Supprimer */}
+          <div
+            className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-full"
+            onClick={(e) => e.preventDefault()}
+          >
+            <DeleteRecipeButton
+              recipeId={recipe.id}
+              recipeTitle={recipe.title}
+              variant="ghost"
+              size="icon"
+              iconOnly
             />
           </div>
         </div>
