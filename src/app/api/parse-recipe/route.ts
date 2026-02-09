@@ -17,6 +17,7 @@ import {
   parseRecipeFromImage,
   parseRecipeFromHtmlWithAI,
 } from '@/lib/parsers/ai-parser'
+import { isYouTubeUrl, parseRecipeFromYouTube } from '@/lib/parsers/youtube-parser'
 
 // Timeout étendu pour les appels IA (Vercel)
 export const maxDuration = 30
@@ -114,6 +115,12 @@ export async function POST(request: NextRequest) {
       { success: false, error: 'URL invalide. Vérifiez le format (ex: https://www.marmiton.org/...)' },
       { status: 400 }
     )
+  }
+
+  // === YouTube : parsing spécial (description + sous-titres) ===
+  if (isYouTubeUrl(parsedUrl.toString())) {
+    const ytResult = await parseRecipeFromYouTube(parsedUrl.toString())
+    return NextResponse.json(ytResult)
   }
 
   // Fetch la page avec timeout

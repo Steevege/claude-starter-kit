@@ -58,7 +58,7 @@ export function UrlImport({ onResult, onSwitchToText }: UrlImportProps) {
       <div>
         <Label htmlFor="recipe-url">URL de la recette</Label>
         <p className="text-sm text-muted-foreground mt-1 mb-2">
-          Collez le lien d&apos;une recette depuis Marmiton, 750g, CuisineAZ, ou tout autre site.
+          Collez le lien d&apos;une recette depuis Marmiton, 750g, CuisineAZ, YouTube, ou tout autre site.
         </p>
         <div className="flex gap-2">
           <div className="relative flex-1">
