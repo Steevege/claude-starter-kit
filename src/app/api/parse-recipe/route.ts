@@ -134,8 +134,16 @@ export async function POST(request: NextRequest) {
     clearTimeout(timeout)
 
     if (!response.ok) {
+      // Détecter protection Cloudflare (403 + header server: cloudflare)
+      const isCloudflare = response.status === 403 &&
+        (response.headers.get('server')?.toLowerCase().includes('cloudflare') ?? false)
+
+      const errorMsg = isCloudflare
+        ? 'Ce site est protégé par Cloudflare et bloque l\'accès automatique. Copiez-collez le texte de la recette dans l\'onglet "Texte".'
+        : `Le site a répondu avec une erreur (${response.status}). Essayez de copier-coller le texte de la recette.`
+
       return NextResponse.json(
-        { success: false, error: `Le site a répondu avec une erreur (${response.status}). Essayez de copier-coller le texte de la recette.` },
+        { success: false, error: errorMsg, isCloudflare },
         { status: 422 }
       )
     }

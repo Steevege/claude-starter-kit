@@ -126,7 +126,7 @@ export function ImportTabs() {
         </div>
 
         {/* Contenu selon le mode */}
-        {mode === 'url' && <UrlImport onResult={handleParseResult} />}
+        {mode === 'url' && <UrlImport onResult={handleParseResult} onSwitchToText={() => setMode('text')} />}
         {mode === 'text' && <TextImport onResult={handleParseResult} />}
         {mode === 'photo' && <PhotoImport onContinue={handlePhotoContinue} onResult={handlePhotoResult} />}
       </CardContent>

@@ -15,17 +15,20 @@ import type { ParseResult } from '@/lib/parsers/types'
 
 interface UrlImportProps {
   onResult: (result: ParseResult) => void
+  onSwitchToText?: () => void
 }
 
-export function UrlImport({ onResult }: UrlImportProps) {
+export function UrlImport({ onResult, onSwitchToText }: UrlImportProps) {
   const [url, setUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isCloudflare, setIsCloudflare] = useState(false)
 
   const handleAnalyze = async () => {
     if (!url.trim()) return
 
     setError(null)
+    setIsCloudflare(false)
     setIsLoading(true)
 
     try {
@@ -35,12 +38,13 @@ export function UrlImport({ onResult }: UrlImportProps) {
         body: JSON.stringify({ url: url.trim() }),
       })
 
-      const result: ParseResult = await response.json()
+      const result = await response.json()
 
       if (result.success) {
-        onResult(result)
+        onResult(result as ParseResult)
       } else {
         setError(result.error || 'Erreur lors de l\'analyse.')
+        if (result.isCloudflare) setIsCloudflare(true)
       }
     } catch {
       setError('Erreur réseau. Vérifiez votre connexion.')
@@ -87,8 +91,18 @@ export function UrlImport({ onResult }: UrlImportProps) {
       </div>
 
       {error && (
-        <div className="p-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-          {error}
+        <div className="p-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md space-y-2">
+          <p>{error}</p>
+          {isCloudflare && onSwitchToText && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onSwitchToText}
+              className="text-foreground"
+            >
+              Passer au mode Texte
+            </Button>
+          )}
         </div>
       )}
 
