@@ -120,7 +120,7 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
         recipeIdToUse = newRecipe.id
       }
 
-      // Upload image si présente
+      // Upload image si fichier local présent
       if (imageFile && recipeIdToUse) {
         const fileExt = imageFile.name.split('.').pop()
         const fileName = `${user.id}/${recipeIdToUse}.${fileExt}`
@@ -139,6 +139,12 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
             .update({ image_url: publicUrl })
             .eq('id', recipeIdToUse)
         }
+      } else if (imageUrl && recipeIdToUse) {
+        // Image externe (ex: URL importée depuis Marmiton)
+        await supabase
+          .from('recipes')
+          .update({ image_url: imageUrl })
+          .eq('id', recipeIdToUse)
       }
 
       // Redirection
