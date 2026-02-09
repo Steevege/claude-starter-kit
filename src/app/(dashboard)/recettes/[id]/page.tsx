@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Clock, Users, Edit, Trash2 } from 'lucide-react'
+import { ArrowLeft, Clock, Users, Edit, Trash2, ChefHat } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS } from '@/lib/types/recipe'
@@ -66,6 +66,13 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
         </Link>
 
         <div className="flex gap-2">
+          <Link href={`/recettes/${id}/cooking`}>
+            <Button variant="outline" size="sm">
+              <ChefHat className="w-4 h-4 mr-2" />
+              Cuisiner
+            </Button>
+          </Link>
+
           <Link href={`/recettes/${id}/edit`}>
             <Button variant="outline" size="sm">
               <Edit className="w-4 h-4 mr-2" />
