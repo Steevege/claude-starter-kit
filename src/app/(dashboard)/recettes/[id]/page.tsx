@@ -10,6 +10,7 @@ import { ArrowLeft, Heart, Clock, Users, Edit, Trash2 } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS } from '@/lib/types/recipe'
+import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -71,10 +72,10 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
             </Button>
           </Link>
 
-          <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-            <Trash2 className="w-4 h-4 mr-2" />
-            Supprimer
-          </Button>
+          <DeleteRecipeButton
+            recipeId={id}
+            recipeTitle={recipeTyped.title}
+          />
         </div>
       </div>
 

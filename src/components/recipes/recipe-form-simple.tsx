@@ -25,12 +25,18 @@ const CATEGORIES: RecipeCategory[] = [
   'pain_viennoiserie', 'conserve'
 ]
 
-export function RecipeFormSimple() {
+interface RecipeFormSimpleProps {
+  recipeId?: string
+  defaultValues?: Partial<RecipeSimpleInput>
+  imageUrl?: string | null
+}
+
+export function RecipeFormSimple({ recipeId, defaultValues, imageUrl }: RecipeFormSimpleProps = {}) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(imageUrl || null)
 
   const {
     register,
@@ -38,7 +44,7 @@ export function RecipeFormSimple() {
     formState: { errors },
   } = useForm<RecipeSimpleInput>({
     resolver: zodResolver(recipeSimpleSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       title: '',
       category: 'plat',
       ingredients_text: '',
@@ -77,25 +83,45 @@ export function RecipeFormSimple() {
       // Parser et convertir au format DB
       const recipeData = parseSimpleRecipe(data)
 
-      // Créer recette
-      const { data: newRecipe, error: insertError } = await supabase
-        .from('recipes')
-        .insert({
-          ...recipeData,
-          user_id: user.id,
-        })
-        .select()
-        .single()
+      let recipeIdToUse = recipeId
 
-      if (insertError) {
-        console.error('Erreur insert:', insertError)
-        throw insertError
+      if (recipeId) {
+        // Mode édition
+        const { error: updateError } = await supabase
+          .from('recipes')
+          .update({
+            ...recipeData,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', recipeId)
+          .eq('user_id', user.id)
+
+        if (updateError) {
+          console.error('Erreur update:', updateError)
+          throw updateError
+        }
+      } else {
+        // Mode création
+        const { data: newRecipe, error: insertError } = await supabase
+          .from('recipes')
+          .insert({
+            ...recipeData,
+            user_id: user.id,
+          })
+          .select()
+          .single()
+
+        if (insertError) {
+          console.error('Erreur insert:', insertError)
+          throw insertError
+        }
+        recipeIdToUse = newRecipe.id
       }
 
       // Upload image si présente
-      if (imageFile && newRecipe) {
+      if (imageFile && recipeIdToUse) {
         const fileExt = imageFile.name.split('.').pop()
-        const fileName = `${user.id}/${newRecipe.id}.${fileExt}`
+        const fileName = `${user.id}/${recipeIdToUse}.${fileExt}`
 
         const { error: uploadError } = await supabase.storage
           .from('recipe-images')
@@ -109,12 +135,12 @@ export function RecipeFormSimple() {
           await supabase
             .from('recipes')
             .update({ image_url: publicUrl })
-            .eq('id', newRecipe.id)
+            .eq('id', recipeIdToUse)
         }
       }
 
       // Redirection
-      router.push(`/recettes/${newRecipe.id}`)
+      router.push(`/recettes/${recipeIdToUse}`)
       router.refresh()
     } catch (err) {
       console.error('Erreur soumission:', err)
@@ -317,7 +343,7 @@ export function RecipeFormSimple() {
           Annuler
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Enregistrement...' : 'Créer la recette'}
+          {isLoading ? 'Enregistrement...' : recipeId ? 'Mettre à jour' : 'Créer la recette'}
         </Button>
       </div>
     </form>
