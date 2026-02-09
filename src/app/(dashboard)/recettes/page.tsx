@@ -36,23 +36,33 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
   const params = await searchParams
 
   // Query recipes avec filtres
-  let query = supabase
-    .from('recipes')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+  let recipes: Recipe[] | null = null
+  let error: { message: string } | null = null
 
-  // Filtre catégorie
-  if (params.category) {
-    query = query.eq('category', params.category)
-  }
-
-  // Filtre recherche (titre)
   if (params.search) {
-    query = query.ilike('title', `%${params.search}%`)
-  }
+    // Recherche dans titre ET ingrédients via RPC
+    const result = await supabase.rpc('search_recipes', {
+      search_term: params.search,
+      category_filter: params.category || null,
+    })
+    recipes = result.data as Recipe[] | null
+    error = result.error
+  } else {
+    // Query standard sans recherche
+    let query = supabase
+      .from('recipes')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
 
-  const { data: recipes, error } = await query
+    if (params.category) {
+      query = query.eq('category', params.category)
+    }
+
+    const result = await query
+    recipes = result.data as Recipe[] | null
+    error = result.error
+  }
 
   if (error) {
     console.error('Erreur récupération recettes:', error)
