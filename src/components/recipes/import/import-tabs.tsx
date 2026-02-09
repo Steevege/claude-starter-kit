@@ -47,6 +47,13 @@ export function ImportTabs() {
     })
   }
 
+  const handlePhotoResult = (result: ParseResult, file: File) => {
+    if (result.success && result.recipe) {
+      setPhotoFile(file)
+      setParsedRecipe(result.recipe)
+    }
+  }
+
   const handleBack = () => {
     setParsedRecipe(null)
     setPhotoFile(null)
@@ -121,7 +128,7 @@ export function ImportTabs() {
         {/* Contenu selon le mode */}
         {mode === 'url' && <UrlImport onResult={handleParseResult} />}
         {mode === 'text' && <TextImport onResult={handleParseResult} />}
-        {mode === 'photo' && <PhotoImport onContinue={handlePhotoContinue} />}
+        {mode === 'photo' && <PhotoImport onContinue={handlePhotoContinue} onResult={handlePhotoResult} />}
       </CardContent>
     </Card>
   )
