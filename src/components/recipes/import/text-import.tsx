@@ -37,7 +37,7 @@ export function TextImport({ onResult }: TextImportProps) {
     <div className="space-y-4">
       <div>
         <Label htmlFor="recipe-text">Texte de la recette</Label>
-        <p className="text-sm text-gray-500 mt-1 mb-2">
+        <p className="text-sm text-muted-foreground mt-1 mb-2">
           Collez le texte complet d&apos;une recette (titre, ingrédients, étapes). Le format est détecté automatiquement.
         </p>
         <Textarea
@@ -50,7 +50,7 @@ export function TextImport({ onResult }: TextImportProps) {
       </div>
 
       {error && (
-        <div className="p-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+        <div className="p-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
           {error}
         </div>
       )}

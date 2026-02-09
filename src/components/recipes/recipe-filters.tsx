@@ -71,7 +71,7 @@ export function RecipeFilters() {
       {/* Recherche */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Rechercher une recette..."
@@ -95,7 +95,7 @@ export function RecipeFilters() {
 
       {/* Catégories */}
       <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Catégories</p>
+        <p className="text-sm font-medium text-foreground mb-2">Catégories</p>
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((category) => {
             const isActive = currentCategory === category
@@ -103,7 +103,7 @@ export function RecipeFilters() {
               <Badge
                 key={category}
                 variant={isActive ? 'default' : 'outline'}
-                className="cursor-pointer hover:bg-gray-100"
+                className="cursor-pointer hover:bg-accent"
                 onClick={() => handleCategoryClick(category)}
               >
                 {RECIPE_CATEGORY_LABELS[category]}

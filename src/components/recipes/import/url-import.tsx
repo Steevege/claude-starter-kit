@@ -53,12 +53,12 @@ export function UrlImport({ onResult }: UrlImportProps) {
     <div className="space-y-4">
       <div>
         <Label htmlFor="recipe-url">URL de la recette</Label>
-        <p className="text-sm text-gray-500 mt-1 mb-2">
+        <p className="text-sm text-muted-foreground mt-1 mb-2">
           Collez le lien d&apos;une recette depuis Marmiton, 750g, CuisineAZ, ou tout autre site.
         </p>
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               id="recipe-url"
               type="url"
@@ -87,16 +87,16 @@ export function UrlImport({ onResult }: UrlImportProps) {
       </div>
 
       {error && (
-        <div className="p-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+        <div className="p-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
           {error}
         </div>
       )}
 
       {isLoading && (
         <div className="space-y-3 animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-3/4" />
-          <div className="h-4 bg-gray-200 rounded w-1/2" />
-          <div className="h-4 bg-gray-200 rounded w-2/3" />
+          <div className="h-4 bg-accent/40 rounded w-3/4" />
+          <div className="h-4 bg-accent/40 rounded w-1/2" />
+          <div className="h-4 bg-accent/40 rounded w-2/3" />
         </div>
       )}
     </div>

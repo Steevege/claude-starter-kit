@@ -81,7 +81,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
 
       {/* Image principale */}
       {recipeTyped.image_url && (
-        <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-gray-200">
+        <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-accent/30">
           <Image
             src={recipeTyped.image_url}
             alt={recipeTyped.title}
@@ -95,7 +95,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
       {/* Titre et badges */}
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-4xl font-bold text-gray-900">
+          <h1 className="text-4xl font-bold text-foreground">
             {recipeTyped.title}
           </h1>
           {recipeTyped.is_favorite && (
@@ -124,7 +124,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
 
       {/* Métadonnées */}
       {(totalTime > 0 || recipeTyped.metadata.servings) && (
-        <div className="flex flex-wrap gap-6 text-gray-600">
+        <div className="flex flex-wrap gap-6 text-muted-foreground">
           {recipeTyped.metadata.prep_time && (
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5" />
@@ -170,14 +170,14 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
             {recipeTyped.ingredients.map((group, groupIdx) => (
               <div key={groupIdx}>
                 {group.group && (
-                  <h4 className="font-semibold text-sm text-gray-700 mb-2">
+                  <h4 className="font-semibold text-sm text-foreground mb-2">
                     {group.group}
                   </h4>
                 )}
                 <ul className="space-y-2">
                   {group.items.map((item, itemIdx) => (
                     <li key={itemIdx} className="flex gap-2 text-sm">
-                      <span className="text-gray-400">•</span>
+                      <span className="text-muted-foreground/50">•</span>
                       <span>
                         {item.quantity && item.unit && (
                           <span className="font-medium">
@@ -189,7 +189,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
                         )}
                         {item.name}
                         {item.note && (
-                          <span className="text-gray-500 italic"> ({item.note})</span>
+                          <span className="text-muted-foreground italic"> ({item.note})</span>
                         )}
                       </span>
                     </li>
@@ -209,13 +209,13 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
             <ol className="space-y-4">
               {recipeTyped.steps.map((step) => (
                 <li key={step.order} className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
                     {step.order}
                   </div>
                   <div className="flex-1 pt-1">
-                    <p className="text-gray-900">{step.instruction}</p>
+                    <p className="text-foreground">{step.instruction}</p>
                     {step.duration && (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         ⏱️ {step.duration} min
                       </p>
                     )}
@@ -231,13 +231,13 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
       {recipeTyped.metadata.source_url && (
         <Card>
           <CardContent className="pt-6">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Source :{' '}
               <a
                 href={recipeTyped.metadata.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
+                className="text-primary hover:underline"
               >
                 {recipeTyped.metadata.source_url}
               </a>

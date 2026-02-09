@@ -37,7 +37,7 @@ export function PhotoImport({ onContinue }: PhotoImportProps) {
     <div className="space-y-4">
       <div>
         <Label>Photo de la recette</Label>
-        <p className="text-sm text-gray-500 mt-1 mb-4">
+        <p className="text-sm text-muted-foreground mt-1 mb-4">
           Prenez en photo une recette d&apos;un livre ou magazine, puis remplissez le formulaire en vous y référant.
         </p>
 
@@ -84,7 +84,7 @@ export function PhotoImport({ onContinue }: PhotoImportProps) {
       {/* Preview */}
       {preview && (
         <div className="space-y-4">
-          <div className="relative w-full max-h-80 rounded-lg overflow-hidden bg-gray-100 border">
+          <div className="relative w-full max-h-80 rounded-lg overflow-hidden bg-accent/30 border">
             <img
               src={preview}
               alt="Photo de recette"

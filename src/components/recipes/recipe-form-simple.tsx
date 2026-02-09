@@ -155,7 +155,7 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
       {error && (
-        <div className="p-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+        <div className="p-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
           {error}
         </div>
       )}
@@ -176,7 +176,7 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
               {...register('title')}
             />
             {errors.title && (
-              <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>
+              <p className="text-sm text-destructive mt-1">{errors.title.message}</p>
             )}
           </div>
 
@@ -202,7 +202,7 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
             <Label htmlFor="image">Image (optionnel)</Label>
             <div className="mt-2 space-y-4">
               {imagePreview && (
-                <div className="relative w-full h-48 rounded-md overflow-hidden bg-gray-100">
+                <div className="relative w-full h-48 rounded-md overflow-hidden bg-accent/30">
                   <img
                     src={imagePreview}
                     alt="Preview"
@@ -306,7 +306,7 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
               {...register('ingredients_text')}
             />
             {errors.ingredients_text && (
-              <p className="text-sm text-red-600 mt-1">{errors.ingredients_text.message}</p>
+              <p className="text-sm text-destructive mt-1">{errors.ingredients_text.message}</p>
             )}
           </div>
         </CardContent>
@@ -328,7 +328,7 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
               {...register('steps_text')}
             />
             {errors.steps_text && (
-              <p className="text-sm text-red-600 mt-1">{errors.steps_text.message}</p>
+              <p className="text-sm text-destructive mt-1">{errors.steps_text.message}</p>
             )}
           </div>
         </CardContent>

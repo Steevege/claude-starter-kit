@@ -71,7 +71,7 @@ export function LoginForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+            <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
               {error}
             </div>
           )}
@@ -87,7 +87,7 @@ export function LoginForm() {
               {...register('email')}
             />
             {errors.email && (
-              <p className="text-sm text-red-600">{errors.email.message}</p>
+              <p className="text-sm text-destructive">{errors.email.message}</p>
             )}
           </div>
 
@@ -101,7 +101,7 @@ export function LoginForm() {
               {...register('password')}
             />
             {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
+              <p className="text-sm text-destructive">{errors.password.message}</p>
             )}
           </div>
         </CardContent>
@@ -115,11 +115,11 @@ export function LoginForm() {
             {isLoading ? 'Connexion...' : 'Se connecter'}
           </Button>
 
-          <p className="text-sm text-center text-gray-600">
+          <p className="text-sm text-center text-muted-foreground">
             Pas encore de compte ?{' '}
             <Link
               href="/signup"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-primary hover:text-primary/80"
             >
               S'inscrire
             </Link>

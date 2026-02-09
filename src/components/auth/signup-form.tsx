@@ -78,7 +78,7 @@ export function SignupForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+            <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
               {error}
             </div>
           )}
@@ -94,7 +94,7 @@ export function SignupForm() {
               {...register('email')}
             />
             {errors.email && (
-              <p className="text-sm text-red-600">{errors.email.message}</p>
+              <p className="text-sm text-destructive">{errors.email.message}</p>
             )}
           </div>
 
@@ -108,9 +108,9 @@ export function SignupForm() {
               {...register('password')}
             />
             {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
+              <p className="text-sm text-destructive">{errors.password.message}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Minimum 8 caractères, avec majuscule, minuscule et chiffre
             </p>
           </div>
@@ -125,7 +125,7 @@ export function SignupForm() {
               {...register('confirmPassword')}
             />
             {errors.confirmPassword && (
-              <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
+              <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
             )}
           </div>
         </CardContent>
@@ -139,11 +139,11 @@ export function SignupForm() {
             {isLoading ? 'Création...' : 'Créer mon compte'}
           </Button>
 
-          <p className="text-sm text-center text-gray-600">
+          <p className="text-sm text-center text-muted-foreground">
             Déjà un compte ?{' '}
             <Link
               href="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-primary hover:text-primary/80"
             >
               Se connecter
             </Link>
