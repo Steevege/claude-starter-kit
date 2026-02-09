@@ -1,13 +1,16 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
 import { LogOut, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export function UserMenu({ variant = 'desktop' }: { variant?: 'mobile' | 'desktop' }) {
   const router = useRouter()
+  const pathname = usePathname()
   const [email, setEmail] = useState<string | null>(null)
 
   useEffect(() => {
@@ -24,14 +27,18 @@ export function UserMenu({ variant = 'desktop' }: { variant?: 'mobile' | 'deskto
   }
 
   if (variant === 'mobile') {
+    const isActive = pathname === '/compte'
     return (
-      <button
-        onClick={handleSignOut}
-        className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+      <Link
+        href="/compte"
+        className={cn(
+          'flex flex-col items-center justify-center gap-1',
+          isActive ? 'text-primary' : 'text-muted-foreground'
+        )}
       >
         <User className="size-5" />
         <span className="text-xs">Compte</span>
-      </button>
+      </Link>
     )
   }
 
@@ -42,6 +49,12 @@ export function UserMenu({ variant = 'desktop' }: { variant?: 'mobile' | 'deskto
           {email}
         </span>
       )}
+      <Link href="/compte">
+        <Button variant="ghost" size="sm">
+          <User className="size-4" />
+          Mon compte
+        </Button>
+      </Link>
       <Button variant="ghost" size="sm" onClick={handleSignOut}>
         <LogOut className="size-4" />
         Déconnexion
