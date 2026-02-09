@@ -19,6 +19,9 @@ export type RecipeCategory =
 // Difficulté de la recette
 export type RecipeDifficulty = 'facile' | 'moyen' | 'difficile'
 
+// Statut de la recette
+export type RecipeStatus = 'a_tester' | 'testee' | 'approuvee'
+
 // Type de source d'import
 export type RecipeSourceType = 'manual' | 'url' | 'paste' | 'photo'
 
@@ -63,6 +66,7 @@ export interface Recipe {
   metadata: RecipeMetadata
   image_url: string | null
   source_type: RecipeSourceType
+  status: RecipeStatus
   is_favorite: boolean
   tags: string[]
   created_at: string
@@ -96,3 +100,27 @@ export const RECIPE_DIFFICULTY_LABELS: Record<RecipeDifficulty, string> = {
   moyen: 'Moyen',
   difficile: 'Difficile',
 }
+
+// Labels lisibles pour les statuts
+export const RECIPE_STATUS_LABELS: Record<RecipeStatus, string> = {
+  a_tester: 'À tester',
+  testee: 'Testée',
+  approuvee: 'Approuvée',
+}
+
+// Couleurs Tailwind pour les statuts
+export const RECIPE_STATUS_COLORS: Record<RecipeStatus, string> = {
+  a_tester: 'bg-amber-100 text-amber-800 hover:bg-amber-200',
+  testee: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
+  approuvee: 'bg-green-100 text-green-800 hover:bg-green-200',
+}
+
+// Ordre de rotation pour le toggle (clic = statut suivant)
+export const RECIPE_STATUS_CYCLE: Record<RecipeStatus, RecipeStatus> = {
+  a_tester: 'testee',
+  testee: 'approuvee',
+  approuvee: 'a_tester',
+}
+
+// Liste ordonnée des statuts (pour les filtres)
+export const RECIPE_STATUSES: RecipeStatus[] = ['a_tester', 'testee', 'approuvee']

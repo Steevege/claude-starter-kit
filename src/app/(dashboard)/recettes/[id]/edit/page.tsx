@@ -94,6 +94,7 @@ export default async function RecipeEditPage({ params }: RecipeEditPageProps) {
           servings: recipeTyped.metadata.servings,
           difficulty: recipeTyped.metadata.difficulty,
           source_type: recipeTyped.source_type,
+          status: recipeTyped.status,
           is_favorite: recipeTyped.is_favorite,
         }}
         imageUrl={recipeTyped.image_url}

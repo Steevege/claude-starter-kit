@@ -13,6 +13,7 @@ import { RECIPE_CATEGORY_LABELS } from '@/lib/types/recipe'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
+import { StatusToggleButton } from '@/components/recipes/status-toggle-button'
 import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
 import { cn } from '@/lib/utils'
 
@@ -111,10 +112,14 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
         </CardContent>
 
         {/* Footer */}
-        <CardFooter className="px-4 pb-4 pt-0">
+        <CardFooter className="px-4 pb-4 pt-0 justify-between">
           <Badge variant="secondary" className={categoryColor}>
             {RECIPE_CATEGORY_LABELS[recipe.category]}
           </Badge>
+          <StatusToggleButton
+            recipeId={recipe.id}
+            status={recipe.status}
+          />
         </CardFooter>
       </Card>
     </Link>

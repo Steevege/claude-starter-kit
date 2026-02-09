@@ -5,7 +5,13 @@
  */
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { RECIPE_CATEGORY_LABELS, type RecipeCategory } from '@/lib/types/recipe'
+import {
+  RECIPE_CATEGORY_LABELS,
+  RECIPE_STATUS_LABELS,
+  RECIPE_STATUSES,
+  type RecipeCategory,
+  type RecipeStatus,
+} from '@/lib/types/recipe'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -30,6 +36,7 @@ export function RecipeFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const currentCategory = searchParams.get('category')
+  const currentStatus = searchParams.get('status')
   const currentSearch = searchParams.get('search') || ''
 
   const [searchValue, setSearchValue] = useState(currentSearch)
@@ -41,6 +48,18 @@ export function RecipeFilters() {
       params.delete('category')
     } else {
       params.set('category', category)
+    }
+
+    router.push(`/recettes?${params.toString()}`)
+  }
+
+  const handleStatusClick = (status: RecipeStatus) => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (currentStatus === status) {
+      params.delete('status')
+    } else {
+      params.set('status', status)
     }
 
     router.push(`/recettes?${params.toString()}`)
@@ -64,7 +83,7 @@ export function RecipeFilters() {
     router.push('/recettes')
   }
 
-  const hasFilters = currentCategory || currentSearch
+  const hasFilters = currentCategory || currentStatus || currentSearch
 
   return (
     <div className="space-y-4">
@@ -107,6 +126,26 @@ export function RecipeFilters() {
                 onClick={() => handleCategoryClick(category)}
               >
                 {RECIPE_CATEGORY_LABELS[category]}
+              </Badge>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Statut */}
+      <div>
+        <p className="text-sm font-medium text-foreground mb-2">Statut</p>
+        <div className="flex flex-wrap gap-2">
+          {RECIPE_STATUSES.map((status) => {
+            const isActive = currentStatus === status
+            return (
+              <Badge
+                key={status}
+                variant={isActive ? 'default' : 'outline'}
+                className="cursor-pointer hover:bg-accent"
+                onClick={() => handleStatusClick(status)}
+              >
+                {RECIPE_STATUS_LABELS[status]}
               </Badge>
             )
           })}

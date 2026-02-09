@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { createClient } from '@/lib/supabase/client'
 import { recipeSimpleSchema, parseSimpleRecipe, type RecipeSimpleInput } from '@/lib/schemas/recipe-simple'
-import { RECIPE_CATEGORY_LABELS, type RecipeCategory } from '@/lib/types/recipe'
+import { RECIPE_CATEGORY_LABELS, RECIPE_STATUS_LABELS, RECIPE_STATUSES, type RecipeCategory } from '@/lib/types/recipe'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -52,6 +52,7 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
       ingredients_text: '',
       steps_text: '',
       source_type: 'manual',
+      status: 'a_tester',
       is_favorite: false,
     },
   })
@@ -198,6 +199,23 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
                   {RECIPE_CATEGORY_LABELS[cat]}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Statut */}
+          <div>
+            <Label htmlFor="status">Statut</Label>
+            <select
+              id="status"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              disabled={isLoading}
+              {...register('status')}
+            >
+              {RECIPE_STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {RECIPE_STATUS_LABELS[s]}
                 </option>
               ))}
             </select>

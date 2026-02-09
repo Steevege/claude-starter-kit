@@ -12,6 +12,7 @@ import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS } from '@/lib/types/recipe'
 import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
 import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
+import { StatusToggleButton } from '@/components/recipes/status-toggle-button'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -120,6 +121,11 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
           <Badge variant="secondary">
             {RECIPE_CATEGORY_LABELS[recipeTyped.category]}
           </Badge>
+
+          <StatusToggleButton
+            recipeId={recipeTyped.id}
+            status={recipeTyped.status}
+          />
 
           {recipeTyped.metadata.difficulty && (
             <Badge variant="outline">

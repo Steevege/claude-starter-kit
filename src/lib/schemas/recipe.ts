@@ -71,6 +71,8 @@ export const recipeInsertSchema = z.object({
 
   source_type: z.enum(['manual', 'url', 'paste', 'photo']),
 
+  status: z.enum(['a_tester', 'testee', 'approuvee']).default('a_tester'),
+
   is_favorite: z.boolean().default(false),
 
   tags: z.array(z.string()).default([]),
@@ -84,6 +86,7 @@ export const recipeUpdateSchema = recipeInsertSchema.partial().extend({
 // Schema pour recherche/filtres
 export const recipeFilterSchema = z.object({
   category: z.string().optional(),
+  status: z.string().optional(),
   is_favorite: z.boolean().optional(),
   search: z.string().optional(),
   tags: z.array(z.string()).optional(),

@@ -16,6 +16,7 @@ import type { Recipe } from '@/lib/types/recipe'
 interface RecettesPageProps {
   searchParams: Promise<{
     category?: string
+    status?: string
     search?: string
   }>
 }
@@ -44,6 +45,7 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
     const result = await supabase.rpc('search_recipes', {
       search_term: params.search,
       category_filter: params.category || null,
+      status_filter: params.status || null,
     })
     recipes = result.data as Recipe[] | null
     error = result.error
@@ -57,6 +59,10 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
 
     if (params.category) {
       query = query.eq('category', params.category)
+    }
+
+    if (params.status) {
+      query = query.eq('status', params.status)
     }
 
     const result = await query

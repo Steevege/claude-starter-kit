@@ -29,6 +29,7 @@ export const recipeSimpleSchema = z.object({
 
   source_type: z.enum(['manual', 'url', 'paste', 'photo']).default('manual'),
   source_url: z.string().optional(),
+  status: z.enum(['a_tester', 'testee', 'approuvee']).default('a_tester'),
   is_favorite: z.boolean().default(false),
 })
 
@@ -68,6 +69,7 @@ export function parseSimpleRecipe(input: RecipeSimpleInput) {
       ...(input.source_url ? { source_url: input.source_url } : {}),
     },
     source_type: input.source_type,
+    status: input.status || 'a_tester',
     is_favorite: input.is_favorite,
     tags: [],
   }
