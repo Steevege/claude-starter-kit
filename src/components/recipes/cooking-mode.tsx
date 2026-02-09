@@ -12,6 +12,7 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet'
 import type { Recipe } from '@/lib/types/recipe'
+import { IngredientsList } from '@/components/recipes/ingredients-list'
 
 interface CookingModeProps {
   recipe: Recipe
@@ -162,37 +163,12 @@ export function CookingMode({ recipe }: CookingModeProps) {
             <SheetTitle>Ingrédients</SheetTitle>
             <SheetDescription>{recipe.title}</SheetDescription>
           </SheetHeader>
-          <div className="px-4 pb-6 space-y-4">
-            {recipe.ingredients.map((group, groupIdx) => (
-              <div key={groupIdx}>
-                {group.group && (
-                  <h4 className="font-semibold text-sm text-foreground mb-2">
-                    {group.group}
-                  </h4>
-                )}
-                <ul className="space-y-2">
-                  {group.items.map((item, itemIdx) => (
-                    <li key={itemIdx} className="flex gap-2 text-base">
-                      <span className="text-muted-foreground/50">•</span>
-                      <span>
-                        {item.quantity && item.unit && (
-                          <span className="font-medium">
-                            {item.quantity} {item.unit}{' '}
-                          </span>
-                        )}
-                        {item.quantity && !item.unit && (
-                          <span className="font-medium">{item.quantity} </span>
-                        )}
-                        {item.name}
-                        {item.note && (
-                          <span className="text-muted-foreground italic"> ({item.note})</span>
-                        )}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <div className="px-4 pb-6">
+            <IngredientsList
+              ingredients={recipe.ingredients}
+              servings={recipe.metadata.servings}
+              textSize="base"
+            />
           </div>
         </SheetContent>
       </Sheet>

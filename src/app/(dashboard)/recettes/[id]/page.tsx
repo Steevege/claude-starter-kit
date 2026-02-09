@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Clock, Users, Edit, Trash2, ChefHat } from 'lucide-react'
+import { ArrowLeft, Clock, Edit, Trash2, ChefHat } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS } from '@/lib/types/recipe'
@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { IngredientsList } from '@/components/recipes/ingredients-list'
 
 interface RecipeDetailPageProps {
   params: Promise<{
@@ -135,7 +136,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
       </div>
 
       {/* Métadonnées */}
-      {(totalTime > 0 || recipeTyped.metadata.servings) && (
+      {totalTime > 0 && (
         <div className="flex flex-wrap gap-6 text-muted-foreground">
           {recipeTyped.metadata.prep_time && (
             <div className="flex items-center gap-2">
@@ -156,16 +157,6 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
               </div>
             </div>
           )}
-
-          {recipeTyped.metadata.servings && (
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              <div>
-                <p className="text-sm font-medium">Portions</p>
-                <p className="text-lg">{recipeTyped.metadata.servings}</p>
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -178,37 +169,11 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
           <CardHeader>
             <CardTitle>Ingrédients</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {recipeTyped.ingredients.map((group, groupIdx) => (
-              <div key={groupIdx}>
-                {group.group && (
-                  <h4 className="font-semibold text-sm text-foreground mb-2">
-                    {group.group}
-                  </h4>
-                )}
-                <ul className="space-y-2">
-                  {group.items.map((item, itemIdx) => (
-                    <li key={itemIdx} className="flex gap-2 text-sm">
-                      <span className="text-muted-foreground/50">•</span>
-                      <span>
-                        {item.quantity && item.unit && (
-                          <span className="font-medium">
-                            {item.quantity} {item.unit}{' '}
-                          </span>
-                        )}
-                        {item.quantity && !item.unit && (
-                          <span className="font-medium">{item.quantity} </span>
-                        )}
-                        {item.name}
-                        {item.note && (
-                          <span className="text-muted-foreground italic"> ({item.note})</span>
-                        )}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <CardContent>
+            <IngredientsList
+              ingredients={recipeTyped.ingredients}
+              servings={recipeTyped.metadata.servings}
+            />
           </CardContent>
         </Card>
 
