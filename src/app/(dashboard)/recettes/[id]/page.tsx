@@ -11,6 +11,7 @@ import { ArrowLeft, Clock, Edit, Trash2, ChefHat } from 'lucide-react'
 import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS } from '@/lib/types/recipe'
 import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
+import { GenerateImageButton } from '@/components/recipes/generate-image-button'
 import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
 import { StatusToggleButton } from '@/components/recipes/status-toggle-button'
 import { Button } from '@/components/ui/button'
@@ -90,7 +91,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
       </div>
 
       {/* Image principale */}
-      {recipeTyped.image_url && (
+      {recipeTyped.image_url ? (
         <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-accent/30">
           <Image
             src={recipeTyped.image_url}
@@ -100,6 +101,12 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
             priority
           />
         </div>
+      ) : (
+        <GenerateImageButton
+          recipeId={recipeTyped.id}
+          title={recipeTyped.title}
+          category={recipeTyped.category}
+        />
       )}
 
       {/* Titre et badges */}
