@@ -3,12 +3,14 @@
  *
  * Stratégie :
  * 1. Extraire la description de la vidéo (contient souvent la recette)
- * 2. Extraire les sous-titres FR (ou EN en fallback)
- * 3. Combiner description + sous-titres et envoyer à l'IA
+ * 2. Envoyer à l'IA pour extraction
+ * 3. Si résultat incomplet (pas d'ingrédients), chercher un lien recette
+ *    dans la description et parser le site web lié
  */
 
 import type { ParseResult } from './types'
-import { parseRecipeWithAI } from './ai-parser'
+import { parseRecipeWithAI, parseRecipeFromHtmlWithAI } from './ai-parser'
+import { parseRecipeFromHtml } from './url-parser'
 
 // Cookie pour bypasser la page de consentement GDPR YouTube
 const CONSENT_COOKIE =
@@ -104,30 +106,71 @@ function extractVideoData(html: string): {
 }
 
 /**
- * Récupérer les sous-titres depuis une URL de piste
+ * Extraire les URLs de sites de recettes depuis la description YouTube
+ * Ignore les liens YouTube, réseaux sociaux, etc.
  */
-async function fetchCaptions(captionUrl: string): Promise<string> {
+function extractRecipeLinks(description: string): string[] {
+  const urlRegex = /https?:\/\/[^\s"<>)]+/g
+  const allUrls = description.match(urlRegex) || []
+
+  // Domaines à ignorer (réseaux sociaux, YouTube, raccourcisseurs non-recette)
+  const ignoredDomains = [
+    'youtube.com', 'youtu.be', 'bit.ly', 'goo.gl',
+    'facebook.com', 'instagram.com', 'twitter.com', 'tiktok.com',
+    'pinterest.com', 'amazon.com', 'amzn.to',
+  ]
+
+  return allUrls.filter(url => {
+    try {
+      const parsed = new URL(url)
+      return !ignoredDomains.some(d => parsed.hostname.includes(d))
+    } catch {
+      return false
+    }
+  })
+}
+
+/**
+ * Suivre un lien de recette et parser le site web
+ */
+async function fetchAndParseRecipeLink(recipeUrl: string): Promise<ParseResult> {
   try {
-    const response = await fetch(captionUrl, {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10000)
+
+    const response = await fetch(recipeUrl, {
+      signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
       },
     })
+    clearTimeout(timeout)
 
-    if (!response.ok) return ''
+    if (!response.ok) return { success: false, error: 'Lien inaccessible' }
 
-    const xml = await response.text()
-    if (!xml) return ''
+    const buffer = await response.arrayBuffer()
+    let html = new TextDecoder('utf-8', { fatal: false }).decode(buffer)
 
-    // Extraire le texte des balises <text>
-    const textRegex = /<text[^>]*>([\s\S]*?)<\/text>/g
-    const texts = [...xml.matchAll(textRegex)]
-      .map(m => m[1])
-      .map(t => t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"'))
+    // Vérifier meta charset non-UTF-8
+    const metaCharsetMatch = html.match(/<meta[^>]+charset=["']?([^"'\s;>]+)/i)
+    if (metaCharsetMatch && metaCharsetMatch[1].toLowerCase() !== 'utf-8') {
+      try {
+        html = new TextDecoder(metaCharsetMatch[1], { fatal: false }).decode(buffer)
+      } catch { /* garder UTF-8 */ }
+    }
 
-    return texts.join(' ')
+    // Essayer JSON-LD d'abord
+    const jsonLdResult = parseRecipeFromHtml(html, recipeUrl)
+    if (jsonLdResult.success && jsonLdResult.recipe?.ingredients_text && jsonLdResult.recipe?.steps_text) {
+      return jsonLdResult
+    }
+
+    // Fallback IA
+    return await parseRecipeFromHtmlWithAI(html, recipeUrl)
   } catch {
-    return ''
+    return { success: false, error: 'Erreur lors du parsing du lien' }
   }
 }
 
@@ -187,47 +230,49 @@ export async function parseRecipeFromYouTube(url: string): Promise<ParseResult> 
     }
   }
 
-  // Récupérer les sous-titres (FR prioritaire, sinon EN, sinon premier dispo)
-  let transcript = ''
-  if (videoData.captionUrls.length > 0) {
-    const frCaptions = videoData.captionUrls.find(c => c.lang === 'fr')
-    const enCaptions = videoData.captionUrls.find(c => c.lang === 'en' || c.lang === 'en-GB')
-    const captionTrack = frCaptions || enCaptions || videoData.captionUrls[0]
-
-    transcript = await fetchCaptions(captionTrack.url)
-  }
-
-  // Combiner description + sous-titres pour l'IA
+  // Étape 1 : Essayer de parser la description directement avec l'IA
   let textForAI = ''
-
   if (videoData.description) {
-    textForAI += `Titre de la vidéo : ${videoData.title}\n\nDescription de la vidéo :\n${videoData.description}`
+    textForAI = `Titre de la vidéo : ${videoData.title}\n\nDescription de la vidéo :\n${videoData.description}`
   }
 
-  if (transcript) {
-    // Limiter le transcript à ~4000 chars pour pas dépasser les limites
-    const trimmedTranscript = transcript.slice(0, 4000)
-    textForAI += `\n\nTranscription de la vidéo :\n${trimmedTranscript}`
-  }
+  if (textForAI.trim()) {
+    const result = await parseRecipeWithAI(textForAI)
 
-  if (!textForAI.trim()) {
-    return {
-      success: false,
-      error: 'Aucune description ni sous-titres trouvés pour cette vidéo. Essayez de copier-coller la recette dans l\'onglet "Texte".',
+    // Si le parsing a réussi avec des ingrédients, c'est bon
+    if (result.success && result.recipe?.ingredients_text) {
+      result.recipe.source_type = 'url'
+      result.recipe.source_url = url
+      if (videoData.thumbnailUrl) {
+        result.recipe.image_url = videoData.thumbnailUrl
+      }
+      return result
     }
   }
 
-  // Envoyer à l'IA pour extraction
-  const result = await parseRecipeWithAI(textForAI)
+  // Étape 2 : La description ne contient pas la recette complète
+  // Chercher un lien vers un site de recettes dans la description
+  const recipeLinks = extractRecipeLinks(videoData.description)
 
-  // Ajouter l'URL source et la miniature
-  if (result.success && result.recipe) {
-    result.recipe.source_type = 'url'
-    result.recipe.source_url = url
-    if (videoData.thumbnailUrl) {
-      result.recipe.image_url = videoData.thumbnailUrl
+  for (const recipeLink of recipeLinks) {
+    const linkResult = await fetchAndParseRecipeLink(recipeLink)
+    if (linkResult.success && linkResult.recipe?.ingredients_text) {
+      // Utiliser le titre YouTube si le parsing du site n'a pas trouvé de titre
+      if (!linkResult.recipe.title && videoData.title) {
+        linkResult.recipe.title = videoData.title
+      }
+      linkResult.recipe.source_type = 'url'
+      linkResult.recipe.source_url = url
+      if (videoData.thumbnailUrl && !linkResult.recipe.image_url) {
+        linkResult.recipe.image_url = videoData.thumbnailUrl
+      }
+      return linkResult
     }
   }
 
-  return result
+  // Étape 3 : Rien n'a fonctionné
+  return {
+    success: false,
+    error: 'Impossible d\'extraire la recette de cette vidéo. La description ne contient pas assez d\'informations. Essayez de copier-coller la recette dans l\'onglet "Texte".',
+  }
 }
