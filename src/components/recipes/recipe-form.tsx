@@ -48,8 +48,9 @@ export function RecipeForm({ defaultValues, recipeId }: RecipeFormProps) {
     handleSubmit,
     formState: { errors },
     watch,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useForm<RecipeInsertInput>({
-    resolver: zodResolver(recipeInsertSchema),
+    resolver: zodResolver(recipeInsertSchema) as any,
     defaultValues: defaultValues || {
       title: '',
       category: 'plat',

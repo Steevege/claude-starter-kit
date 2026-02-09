@@ -54,7 +54,7 @@ export const recipeInsertSchema = z.object({
     'pain_viennoiserie',
     'conserve',
   ], {
-    errorMap: () => ({ message: 'Catégorie invalide' }),
+    message: 'Catégorie invalide',
   }),
 
   ingredients: z

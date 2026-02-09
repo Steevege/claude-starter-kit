@@ -29,21 +29,23 @@ interface RecipeFormSimpleProps {
   recipeId?: string
   defaultValues?: Partial<RecipeSimpleInput>
   imageUrl?: string | null
+  photoFile?: File | null
 }
 
-export function RecipeFormSimple({ recipeId, defaultValues, imageUrl }: RecipeFormSimpleProps = {}) {
+export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile }: RecipeFormSimpleProps = {}) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(photoFile || null)
   const [imagePreview, setImagePreview] = useState<string | null>(imageUrl || null)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useForm<RecipeSimpleInput>({
-    resolver: zodResolver(recipeSimpleSchema),
+    resolver: zodResolver(recipeSimpleSchema) as any,
     defaultValues: defaultValues || {
       title: '',
       category: 'plat',

@@ -28,6 +28,7 @@ export const recipeSimpleSchema = z.object({
   difficulty: z.enum(['facile', 'moyen', 'difficile']).optional(),
 
   source_type: z.enum(['manual', 'url', 'paste', 'photo']).default('manual'),
+  source_url: z.string().optional(),
   is_favorite: z.boolean().default(false),
 })
 
@@ -64,6 +65,7 @@ export function parseSimpleRecipe(input: RecipeSimpleInput) {
       cook_time: input.cook_time,
       servings: input.servings,
       difficulty: input.difficulty,
+      ...(input.source_url ? { source_url: input.source_url } : {}),
     },
     source_type: input.source_type,
     is_favorite: input.is_favorite,

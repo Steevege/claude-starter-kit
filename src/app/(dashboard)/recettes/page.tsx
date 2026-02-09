@@ -5,7 +5,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Plus } from 'lucide-react'
+import { Plus, Download } from 'lucide-react'
 
 import { RecipeGrid } from '@/components/recipes/recipe-grid'
 import { RecipeFilters } from '@/components/recipes/recipe-filters'
@@ -71,12 +71,20 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
           </p>
         </div>
 
-        <Link href="/recettes/new">
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Nouvelle recette
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/import">
+            <Button variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Importer
+            </Button>
+          </Link>
+          <Link href="/recettes/new">
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              Nouvelle recette
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <Separator />
