@@ -9,6 +9,7 @@ import { UserMenu } from './user-menu'
 
 const navItems = [
   { href: '/recettes', label: 'Mes Recettes' },
+  { href: '/favoris', label: 'Favoris' },
   { href: '/recettes/new', label: 'Nouvelle Recette' },
   { href: '/import', label: 'Importer' },
 ] as const
@@ -19,6 +20,9 @@ export function DesktopHeader() {
   function isActive(href: string) {
     if (href === '/recettes/new') {
       return pathname === '/recettes/new'
+    }
+    if (href === '/favoris') {
+      return pathname === '/favoris'
     }
     if (href === '/recettes') {
       return pathname === '/recettes' || pathname.startsWith('/recettes/')

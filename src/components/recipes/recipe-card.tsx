@@ -4,12 +4,13 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Heart, ImageIcon, Clock, Users } from 'lucide-react'
+import { ImageIcon, Clock, Users } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS } from '@/lib/types/recipe'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
 import { cn } from '@/lib/utils'
 
 interface RecipeCardProps {
@@ -57,12 +58,14 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
             </div>
           )}
 
-          {/* Badge favori */}
-          {recipe.is_favorite && (
-            <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-1.5">
-              <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-            </div>
-          )}
+          {/* Toggle favori */}
+          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-1.5">
+            <FavoriteToggleButton
+              recipeId={recipe.id}
+              isFavorite={recipe.is_favorite}
+              size="sm"
+            />
+          </div>
         </div>
 
         {/* Contenu */}

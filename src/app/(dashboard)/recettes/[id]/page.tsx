@@ -6,11 +6,12 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Heart, Clock, Users, Edit, Trash2 } from 'lucide-react'
+import { ArrowLeft, Clock, Users, Edit, Trash2 } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS } from '@/lib/types/recipe'
 import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
+import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -98,9 +99,13 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
           <h1 className="text-4xl font-bold text-foreground">
             {recipeTyped.title}
           </h1>
-          {recipeTyped.is_favorite && (
-            <Heart className="w-6 h-6 text-red-500 fill-red-500 flex-shrink-0" />
-          )}
+          <div className="flex-shrink-0">
+            <FavoriteToggleButton
+              recipeId={recipeTyped.id}
+              isFavorite={recipeTyped.is_favorite}
+              size="md"
+            />
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
