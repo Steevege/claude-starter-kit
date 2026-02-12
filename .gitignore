@@ -18,6 +18,13 @@ out/
 # Tests
 coverage/
 .nyc_output/
+.playwright-mcp/
+
+# Screenshots temporaires
+*.png
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
 
 # OS
 .DS_Store
