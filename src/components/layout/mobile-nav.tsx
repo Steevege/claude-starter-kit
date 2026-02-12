@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Heart, PlusCircle, Download, Users } from 'lucide-react'
+import { Home, Heart, PlusCircle, Video, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { UserMenu } from './user-menu'
 
@@ -10,7 +10,7 @@ const navItems = [
   { href: '/recettes', label: 'Recettes', icon: Home },
   { href: '/favoris', label: 'Favoris', icon: Heart },
   { href: '/recettes/new', label: 'Nouvelle', icon: PlusCircle },
-  { href: '/import', label: 'Import', icon: Download },
+  { href: '/videos', label: 'Vidéos', icon: Video },
   { href: '/famille', label: 'Famille', icon: Users },
 ] as const
 
@@ -23,6 +23,9 @@ export function MobileNav() {
     }
     if (href === '/favoris') {
       return pathname === '/favoris'
+    }
+    if (href === '/videos') {
+      return pathname === '/videos' || pathname.startsWith('/videos/')
     }
     if (href === '/famille') {
       return pathname === '/famille' || pathname.startsWith('/famille/')

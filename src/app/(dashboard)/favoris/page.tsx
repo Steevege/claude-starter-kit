@@ -26,6 +26,7 @@ export default async function FavorisPage() {
     .select('*')
     .eq('user_id', user.id)
     .eq('is_favorite', true)
+    .neq('source_type', 'video')
     .order('updated_at', { ascending: false })
 
   if (error) {

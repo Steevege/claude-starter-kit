@@ -26,7 +26,38 @@ export type RecipeStatus = 'a_tester' | 'testee' | 'approuvee'
 export type RecipeAppliance = 'airfryer' | 'robot_cuiseur' | 'cookeo'
 
 // Type de source d'import
-export type RecipeSourceType = 'manual' | 'url' | 'paste' | 'photo'
+export type RecipeSourceType = 'manual' | 'url' | 'paste' | 'photo' | 'video'
+
+// Plateforme vidéo (détection automatique depuis l'URL)
+export type VideoPlatform = 'instagram' | 'tiktok' | 'youtube' | 'facebook' | 'autre'
+
+// Labels lisibles pour les plateformes vidéo
+export const VIDEO_PLATFORM_LABELS: Record<VideoPlatform, string> = {
+  instagram: 'Instagram',
+  tiktok: 'TikTok',
+  youtube: 'YouTube',
+  facebook: 'Facebook',
+  autre: 'Autre',
+}
+
+// Couleurs Tailwind pour les badges plateforme
+export const VIDEO_PLATFORM_COLORS: Record<VideoPlatform, string> = {
+  instagram: 'bg-pink-100 text-pink-800',
+  tiktok: 'bg-gray-900 text-white',
+  youtube: 'bg-red-100 text-red-800',
+  facebook: 'bg-blue-100 text-blue-800',
+  autre: 'bg-gray-100 text-gray-800',
+}
+
+// Détection automatique de la plateforme depuis l'URL
+export function detectVideoPlatform(url: string): VideoPlatform {
+  const lower = url.toLowerCase()
+  if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram'
+  if (lower.includes('tiktok.com')) return 'tiktok'
+  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube'
+  if (lower.includes('facebook.com') || lower.includes('fb.watch')) return 'facebook'
+  return 'autre'
+}
 
 // Ingrédient individuel
 export interface Ingredient {
@@ -56,6 +87,8 @@ export interface RecipeMetadata {
   servings?: number // Nombre de portions
   difficulty?: RecipeDifficulty
   source_url?: string // URL source si importé depuis le web
+  notes?: string // Notes personnelles (utilisé pour les vidéos)
+  platform?: VideoPlatform // Plateforme vidéo (auto-détecté)
 }
 
 // Recette complète (correspond à la table recipes)

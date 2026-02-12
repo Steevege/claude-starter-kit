@@ -11,7 +11,7 @@ const navItems = [
   { href: '/recettes', label: 'Mes Recettes' },
   { href: '/favoris', label: 'Favoris' },
   { href: '/recettes/new', label: 'Nouvelle Recette' },
-  { href: '/import', label: 'Importer' },
+  { href: '/videos', label: 'Vidéos' },
   { href: '/famille', label: 'Famille' },
 ] as const
 
@@ -24,6 +24,9 @@ export function DesktopHeader() {
     }
     if (href === '/favoris') {
       return pathname === '/favoris'
+    }
+    if (href === '/videos') {
+      return pathname === '/videos' || pathname.startsWith('/videos/')
     }
     if (href === '/famille') {
       return pathname === '/famille' || pathname.startsWith('/famille/')

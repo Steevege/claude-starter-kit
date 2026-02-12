@@ -30,7 +30,7 @@ export const recipeSimpleSchema = z.object({
   servings: z.number().optional(),
   difficulty: z.enum(['facile', 'moyen', 'difficile']).optional(),
 
-  source_type: z.enum(['manual', 'url', 'paste', 'photo']).default('manual'),
+  source_type: z.enum(['manual', 'url', 'paste', 'photo', 'video']).default('manual'),
   source_url: z.string().optional(),
   status: z.enum(['a_tester', 'testee', 'approuvee']).default('a_tester'),
   is_favorite: z.boolean().default(false),

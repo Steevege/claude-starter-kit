@@ -71,7 +71,7 @@ export const recipeInsertSchema = z.object({
 
   image_url: z.string().url('URL invalide').nullable().optional(),
 
-  source_type: z.enum(['manual', 'url', 'paste', 'photo']),
+  source_type: z.enum(['manual', 'url', 'paste', 'photo', 'video']),
 
   status: z.enum(['a_tester', 'testee', 'approuvee']).default('a_tester'),
 

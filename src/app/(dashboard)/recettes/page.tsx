@@ -42,11 +42,12 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
   let error: { message: string } | null = null
 
   if (params.search) {
-    // Recherche dans titre ET ingrédients via RPC
+    // Recherche dans titre ET ingrédients via RPC (exclure les vidéos)
     const result = await supabase.rpc('search_recipes', {
       search_term: params.search,
       category_filter: params.category || null,
       status_filter: params.status || null,
+      exclude_source_type: 'video',
     })
     recipes = result.data as Recipe[] | null
     error = result.error
@@ -55,11 +56,12 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
       recipes = recipes.filter(r => r.appliance === params.appliance)
     }
   } else {
-    // Query standard sans recherche
+    // Query standard sans recherche (exclure les vidéos)
     let query = supabase
       .from('recipes')
       .select('*')
       .eq('user_id', user.id)
+      .neq('source_type', 'video')
       .order('created_at', { ascending: false })
 
     if (params.category) {

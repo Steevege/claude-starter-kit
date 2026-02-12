@@ -55,6 +55,11 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
 
   const recipeTyped = recipe as Recipe
 
+  // Rediriger vers l'édition vidéo si c'est une vidéo
+  if (recipeTyped.source_type === 'video') {
+    redirect(`/videos/${id}/edit`)
+  }
+
   // Vérifier si l'utilisateur est dans un groupe familial
   const { data: membership } = await supabase
     .from('family_members')
