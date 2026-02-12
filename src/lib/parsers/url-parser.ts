@@ -8,7 +8,7 @@
 
 import * as cheerio from 'cheerio'
 import type { ParsedRecipe, ParseResult } from './types'
-import type { RecipeCategory } from '@/lib/types/recipe'
+import type { RecipeCategory, RecipeAppliance } from '@/lib/types/recipe'
 
 // Mapping catégories anglais/français vers nos catégories
 const CATEGORY_MAP: Record<string, RecipeCategory> = {
@@ -147,6 +147,17 @@ function extractServings(recipeYield: unknown): number | undefined {
 }
 
 /**
+ * Détecter l'appareil de cuisine depuis le contenu de la recette
+ */
+function detectAppliance(text: string): RecipeAppliance | undefined {
+  const lower = text.toLowerCase()
+  if (/\b(airfryer|air\s*fryer)\b/.test(lower)) return 'airfryer'
+  if (/\b(thermomix|monsieur\s*cuisine|companion|magimix\s*cook|robot\s*cuiseur|tm[567]\b)/i.test(lower)) return 'robot_cuiseur'
+  if (/\b(cookeo|multicuiseur\s*moulinex)\b/.test(lower)) return 'cookeo'
+  return undefined
+}
+
+/**
  * Chercher l'objet Recipe dans le JSON-LD (3 formats possibles)
  */
 function findRecipeInJsonLd(data: unknown): Record<string, unknown> | null {
@@ -195,9 +206,16 @@ export function parseRecipeFromHtml(html: string, sourceUrl: string): ParseResul
       const recipe = findRecipeInJsonLd(data)
 
       if (recipe) {
+        // Détecter l'appareil depuis le titre et les étapes
+        const recipeText = [
+          String(recipe.name || ''),
+          extractInstructions(recipe.recipeInstructions),
+        ].join(' ')
+
         const parsed: ParsedRecipe = {
           title: String(recipe.name || '').trim(),
           category: mapCategory(recipe.recipeCategory as string | string[] | undefined),
+          appliance: detectAppliance(recipeText),
           ingredients_text: extractIngredients(recipe.recipeIngredient),
           steps_text: extractInstructions(recipe.recipeInstructions),
           prep_time: parseISO8601Duration(String(recipe.prepTime || '')),
