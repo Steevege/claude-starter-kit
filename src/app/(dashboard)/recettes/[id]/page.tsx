@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { ArrowLeft, Clock, Edit, Trash2, ChefHat } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
-import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS } from '@/lib/types/recipe'
+import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS, RECIPE_APPLIANCE_LABELS, RECIPE_APPLIANCE_COLORS } from '@/lib/types/recipe'
 import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
 import { GenerateImageButton } from '@/components/recipes/generate-image-button'
 import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
@@ -116,6 +116,12 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
           <Badge variant="secondary">
             {RECIPE_CATEGORY_LABELS[recipeTyped.category]}
           </Badge>
+
+          {recipeTyped.appliance && (
+            <Badge variant="secondary" className={RECIPE_APPLIANCE_COLORS[recipeTyped.appliance]}>
+              {RECIPE_APPLIANCE_LABELS[recipeTyped.appliance]}
+            </Badge>
+          )}
 
           <StatusToggleButton
             recipeId={recipeTyped.id}

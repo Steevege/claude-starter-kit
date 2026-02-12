@@ -87,6 +87,7 @@ export default async function RecipeEditPage({ params }: RecipeEditPageProps) {
         defaultValues={{
           title: recipeTyped.title,
           category: recipeTyped.category,
+          appliance: recipeTyped.appliance || undefined,
           ingredients_text: ingredientsText,
           steps_text: stepsText,
           prep_time: recipeTyped.metadata.prep_time,

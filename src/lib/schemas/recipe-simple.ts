@@ -21,6 +21,9 @@ export const recipeSimpleSchema = z.object({
   // Étapes en texte simple (sera parsé)
   steps_text: z.string().min(1, 'Au moins une étape requise'),
 
+  // Appareil de cuisine (optionnel)
+  appliance: z.enum(['airfryer', 'robot_cuiseur', 'cookeo']).optional(),
+
   // Metadata optionnels
   prep_time: z.number().optional(),
   cook_time: z.number().optional(),
@@ -59,6 +62,7 @@ export function parseSimpleRecipe(input: RecipeSimpleInput) {
   return {
     title: input.title,
     category: input.category,
+    appliance: input.appliance || null,
     ingredients: [{ items: ingredientLines }],
     steps: stepLines,
     metadata: {

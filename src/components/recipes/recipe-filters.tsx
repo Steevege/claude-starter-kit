@@ -9,8 +9,11 @@ import {
   RECIPE_CATEGORY_LABELS,
   RECIPE_STATUS_LABELS,
   RECIPE_STATUSES,
+  RECIPE_APPLIANCE_LABELS,
+  RECIPE_APPLIANCES,
   type RecipeCategory,
   type RecipeStatus,
+  type RecipeAppliance,
 } from '@/lib/types/recipe'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +39,7 @@ export function RecipeFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const currentCategory = searchParams.get('category')
+  const currentAppliance = searchParams.get('appliance')
   const currentStatus = searchParams.get('status')
   const currentSearch = searchParams.get('search') || ''
 
@@ -48,6 +52,18 @@ export function RecipeFilters() {
       params.delete('category')
     } else {
       params.set('category', category)
+    }
+
+    router.push(`/recettes?${params.toString()}`)
+  }
+
+  const handleApplianceClick = (appliance: RecipeAppliance) => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (currentAppliance === appliance) {
+      params.delete('appliance')
+    } else {
+      params.set('appliance', appliance)
     }
 
     router.push(`/recettes?${params.toString()}`)
@@ -83,7 +99,7 @@ export function RecipeFilters() {
     router.push('/recettes')
   }
 
-  const hasFilters = currentCategory || currentStatus || currentSearch
+  const hasFilters = currentCategory || currentAppliance || currentStatus || currentSearch
 
   return (
     <div className="space-y-4">
@@ -126,6 +142,26 @@ export function RecipeFilters() {
                 onClick={() => handleCategoryClick(category)}
               >
                 {RECIPE_CATEGORY_LABELS[category]}
+              </Badge>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Appareil */}
+      <div>
+        <p className="text-sm font-medium text-foreground mb-2">Appareil</p>
+        <div className="flex flex-wrap gap-2">
+          {RECIPE_APPLIANCES.map((appliance) => {
+            const isActive = currentAppliance === appliance
+            return (
+              <Badge
+                key={appliance}
+                variant={isActive ? 'default' : 'outline'}
+                className="cursor-pointer hover:bg-accent"
+                onClick={() => handleApplianceClick(appliance)}
+              >
+                {RECIPE_APPLIANCE_LABELS[appliance]}
               </Badge>
             )
           })}

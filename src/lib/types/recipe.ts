@@ -22,6 +22,9 @@ export type RecipeDifficulty = 'facile' | 'moyen' | 'difficile'
 // Statut de la recette
 export type RecipeStatus = 'a_tester' | 'testee' | 'approuvee'
 
+// Appareil de cuisine (optionnel)
+export type RecipeAppliance = 'airfryer' | 'robot_cuiseur' | 'cookeo'
+
 // Type de source d'import
 export type RecipeSourceType = 'manual' | 'url' | 'paste' | 'photo'
 
@@ -61,6 +64,7 @@ export interface Recipe {
   user_id: string
   title: string
   category: RecipeCategory
+  appliance: RecipeAppliance | null
   ingredients: IngredientGroup[]
   steps: RecipeStep[]
   metadata: RecipeMetadata
@@ -100,6 +104,23 @@ export const RECIPE_DIFFICULTY_LABELS: Record<RecipeDifficulty, string> = {
   moyen: 'Moyen',
   difficile: 'Difficile',
 }
+
+// Labels lisibles pour les appareils
+export const RECIPE_APPLIANCE_LABELS: Record<RecipeAppliance, string> = {
+  airfryer: 'Airfryer',
+  robot_cuiseur: 'Robot cuiseur',
+  cookeo: 'Cookeo',
+}
+
+// Couleurs Tailwind pour les appareils
+export const RECIPE_APPLIANCE_COLORS: Record<RecipeAppliance, string> = {
+  airfryer: 'bg-red-100 text-red-800 hover:bg-red-200',
+  robot_cuiseur: 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200',
+  cookeo: 'bg-teal-100 text-teal-800 hover:bg-teal-200',
+}
+
+// Liste ordonnée des appareils (pour les filtres)
+export const RECIPE_APPLIANCES: RecipeAppliance[] = ['airfryer', 'robot_cuiseur', 'cookeo']
 
 // Labels lisibles pour les statuts
 export const RECIPE_STATUS_LABELS: Record<RecipeStatus, string> = {

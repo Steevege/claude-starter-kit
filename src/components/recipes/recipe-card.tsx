@@ -9,7 +9,7 @@ import Image from 'next/image'
 import { ImageIcon, Clock, Users } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
-import { RECIPE_CATEGORY_LABELS } from '@/lib/types/recipe'
+import { RECIPE_CATEGORY_LABELS, RECIPE_APPLIANCE_LABELS, RECIPE_APPLIANCE_COLORS } from '@/lib/types/recipe'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
@@ -113,9 +113,16 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
 
         {/* Footer */}
         <CardFooter className="px-4 pb-4 pt-0 justify-between">
-          <Badge variant="secondary" className={categoryColor}>
-            {RECIPE_CATEGORY_LABELS[recipe.category]}
-          </Badge>
+          <div className="flex flex-wrap gap-1">
+            <Badge variant="secondary" className={categoryColor}>
+              {RECIPE_CATEGORY_LABELS[recipe.category]}
+            </Badge>
+            {recipe.appliance && (
+              <Badge variant="secondary" className={RECIPE_APPLIANCE_COLORS[recipe.appliance]}>
+                {RECIPE_APPLIANCE_LABELS[recipe.appliance]}
+              </Badge>
+            )}
+          </div>
           <StatusToggleButton
             recipeId={recipe.id}
             status={recipe.status}

@@ -19,6 +19,7 @@ Le JSON doit avoir cette structure exacte :
 {
   "title": "Nom de la recette",
   "category": "plat",
+  "appliance": null,
   "ingredients_text": "Un ingrédient par ligne",
   "steps_text": "Une étape par ligne",
   "prep_time": 15,
@@ -29,6 +30,7 @@ Le JSON doit avoir cette structure exacte :
 
 Règles :
 - "category" doit être une de ces valeurs : apero, entree, plat, accompagnement, sauce, dessert, boisson, petit_dejeuner, gouter, pain_viennoiserie, conserve
+- "appliance" doit être null ou une de ces valeurs : airfryer, robot_cuiseur, cookeo. Utilise "airfryer" si la recette mentionne un air fryer. Utilise "robot_cuiseur" si la recette mentionne Thermomix, Monsieur Cuisine, Companion, Magimix Cook Expert ou tout robot cuiseur multifonction. Utilise "cookeo" si la recette mentionne un Cookeo ou multicuiseur Moulinex.
 - "difficulty" doit être : facile, moyen, ou difficile
 - "prep_time" et "cook_time" sont en minutes (nombre entier ou null)
 - "servings" est un nombre entier ou null
@@ -88,6 +90,9 @@ function jsonToParsedRecipe(
     category: (['apero', 'entree', 'plat', 'accompagnement', 'sauce', 'dessert', 'boisson', 'petit_dejeuner', 'gouter', 'pain_viennoiserie', 'conserve'].includes(String(json.category))
       ? String(json.category)
       : 'plat') as ParsedRecipe['category'],
+    appliance: (['airfryer', 'robot_cuiseur', 'cookeo'].includes(String(json.appliance))
+      ? String(json.appliance)
+      : undefined) as ParsedRecipe['appliance'],
     ingredients_text: String(json.ingredients_text || ''),
     steps_text: String(json.steps_text || ''),
     prep_time: typeof json.prep_time === 'number' ? json.prep_time : undefined,

@@ -57,6 +57,8 @@ export const recipeInsertSchema = z.object({
     message: 'Catégorie invalide',
   }),
 
+  appliance: z.enum(['airfryer', 'robot_cuiseur', 'cookeo']).nullable().optional(),
+
   ingredients: z
     .array(ingredientGroupSchema)
     .min(1, 'Au moins un groupe d\'ingrédients requis'),
@@ -86,6 +88,7 @@ export const recipeUpdateSchema = recipeInsertSchema.partial().extend({
 // Schema pour recherche/filtres
 export const recipeFilterSchema = z.object({
   category: z.string().optional(),
+  appliance: z.string().optional(),
   status: z.string().optional(),
   is_favorite: z.boolean().optional(),
   search: z.string().optional(),

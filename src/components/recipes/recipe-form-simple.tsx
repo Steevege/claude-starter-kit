@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { createClient } from '@/lib/supabase/client'
 import { recipeSimpleSchema, parseSimpleRecipe, type RecipeSimpleInput } from '@/lib/schemas/recipe-simple'
-import { RECIPE_CATEGORY_LABELS, RECIPE_STATUS_LABELS, RECIPE_STATUSES, type RecipeCategory } from '@/lib/types/recipe'
+import { RECIPE_CATEGORY_LABELS, RECIPE_STATUS_LABELS, RECIPE_STATUSES, RECIPE_APPLIANCE_LABELS, RECIPE_APPLIANCES, type RecipeCategory } from '@/lib/types/recipe'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -199,6 +199,26 @@ export function RecipeFormSimple({ recipeId, defaultValues, imageUrl, photoFile 
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
                   {RECIPE_CATEGORY_LABELS[cat]}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Appareil */}
+          <div>
+            <Label htmlFor="appliance">Appareil (optionnel)</Label>
+            <select
+              id="appliance"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              disabled={isLoading}
+              {...register('appliance', {
+                setValueAs: (v) => v === '' ? undefined : v
+              })}
+            >
+              <option value="">Aucun</option>
+              {RECIPE_APPLIANCES.map((a) => (
+                <option key={a} value={a}>
+                  {RECIPE_APPLIANCE_LABELS[a]}
                 </option>
               ))}
             </select>

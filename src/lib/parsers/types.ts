@@ -2,12 +2,13 @@
  * Types partagés pour les parsers d'import de recettes
  */
 
-import type { RecipeCategory, RecipeDifficulty } from '@/lib/types/recipe'
+import type { RecipeCategory, RecipeAppliance, RecipeDifficulty } from '@/lib/types/recipe'
 
 // Recette parsée en format texte (compatible avec RecipeFormSimple defaultValues)
 export interface ParsedRecipe {
   title: string
   category: RecipeCategory
+  appliance?: RecipeAppliance
   ingredients_text: string // Un ingrédient par ligne
   steps_text: string // Une étape par ligne
   prep_time?: number

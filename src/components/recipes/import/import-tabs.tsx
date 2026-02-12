@@ -64,6 +64,7 @@ export function ImportTabs() {
     const defaultValues: Partial<RecipeSimpleInput> = {
       title: parsedRecipe.title,
       category: parsedRecipe.category,
+      appliance: parsedRecipe.appliance,
       ingredients_text: parsedRecipe.ingredients_text,
       steps_text: parsedRecipe.steps_text,
       prep_time: parsedRecipe.prep_time,
