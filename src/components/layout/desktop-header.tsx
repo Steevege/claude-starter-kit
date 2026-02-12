@@ -12,6 +12,7 @@ const navItems = [
   { href: '/favoris', label: 'Favoris' },
   { href: '/recettes/new', label: 'Nouvelle Recette' },
   { href: '/import', label: 'Importer' },
+  { href: '/famille', label: 'Famille' },
 ] as const
 
 export function DesktopHeader() {
@@ -23,6 +24,9 @@ export function DesktopHeader() {
     }
     if (href === '/favoris') {
       return pathname === '/favoris'
+    }
+    if (href === '/famille') {
+      return pathname === '/famille' || pathname.startsWith('/famille/')
     }
     if (href === '/recettes') {
       return pathname === '/recettes' || pathname.startsWith('/recettes/')

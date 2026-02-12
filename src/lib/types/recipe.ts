@@ -72,6 +72,7 @@ export interface Recipe {
   source_type: RecipeSourceType
   status: RecipeStatus
   is_favorite: boolean
+  is_shared: boolean
   tags: string[]
   created_at: string
   updated_at: string

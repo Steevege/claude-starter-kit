@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Heart, PlusCircle, Download } from 'lucide-react'
+import { Home, Heart, PlusCircle, Download, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { UserMenu } from './user-menu'
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/favoris', label: 'Favoris', icon: Heart },
   { href: '/recettes/new', label: 'Nouvelle', icon: PlusCircle },
   { href: '/import', label: 'Import', icon: Download },
+  { href: '/famille', label: 'Famille', icon: Users },
 ] as const
 
 export function MobileNav() {
@@ -23,6 +24,9 @@ export function MobileNav() {
     if (href === '/favoris') {
       return pathname === '/favoris'
     }
+    if (href === '/famille') {
+      return pathname === '/famille' || pathname.startsWith('/famille/')
+    }
     if (href === '/recettes') {
       return pathname === '/recettes' || pathname.startsWith('/recettes/')
     }
@@ -31,7 +35,7 @@ export function MobileNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
-      <div className="grid grid-cols-5 h-16">
+      <div className="grid grid-cols-6 h-16">
         {navItems.map((item) => {
           const active = isActive(item.href)
           return (

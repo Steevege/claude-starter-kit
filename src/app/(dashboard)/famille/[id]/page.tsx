@@ -1,32 +1,30 @@
 /**
- * Page détail d'une recette
+ * Page détail d'une recette familiale (lecture seule)
+ * Pas de modifier/supprimer, affiche le nom du propriétaire, bouton copier
  */
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Clock, Edit, Trash2, ChefHat } from 'lucide-react'
+import { ArrowLeft, Clock, ChefHat, User } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
+import type { FamilyMember } from '@/lib/types/family'
 import { RECIPE_CATEGORY_LABELS, RECIPE_DIFFICULTY_LABELS, RECIPE_APPLIANCE_LABELS, RECIPE_APPLIANCE_COLORS } from '@/lib/types/recipe'
-import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
-import { GenerateImageButton } from '@/components/recipes/generate-image-button'
-import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
-import { StatusToggleButton } from '@/components/recipes/status-toggle-button'
-import { ShareToggleButton } from '@/components/family/share-toggle-button'
+import { CopyRecipeButton } from '@/components/family/copy-recipe-button'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { IngredientsList } from '@/components/recipes/ingredients-list'
 
-interface RecipeDetailPageProps {
+interface FamilyRecipeDetailPageProps {
   params: Promise<{
     id: string
   }>
 }
 
-export default async function RecipeDetailPage({ params }: RecipeDetailPageProps) {
+export default async function FamilyRecipeDetailPage({ params }: FamilyRecipeDetailPageProps) {
   const supabase = await createClient()
 
   // Vérifier l'authentification
@@ -38,15 +36,13 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
     redirect('/login')
   }
 
-  // Await params (Next.js 15+)
   const { id } = await params
 
-  // Récupérer la recette
+  // Récupérer la recette (la RLS vérifie qu'elle est visible)
   const { data: recipe, error } = await supabase
     .from('recipes')
     .select('*')
     .eq('id', id)
-    .eq('user_id', user.id)
     .single()
 
   if (error || !recipe) {
@@ -55,14 +51,19 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
 
   const recipeTyped = recipe as Recipe
 
-  // Vérifier si l'utilisateur est dans un groupe familial
-  const { data: membership } = await supabase
+  // Si c'est sa propre recette, rediriger vers la page normale
+  if (recipeTyped.user_id === user.id) {
+    redirect(`/recettes/${id}`)
+  }
+
+  // Trouver le nom du propriétaire via family_members
+  const { data: ownerMembership } = await supabase
     .from('family_members')
-    .select('id')
-    .eq('user_id', user.id)
+    .select('display_name')
+    .eq('user_id', recipeTyped.user_id)
     .single()
 
-  const hasFamily = !!membership
+  const ownerName = (ownerMembership as FamilyMember | null)?.display_name || 'Membre'
 
   const totalTime = (recipeTyped.metadata.prep_time || 0) + (recipeTyped.metadata.cook_time || 0)
 
@@ -70,7 +71,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header Navigation */}
       <div className="flex items-center justify-between">
-        <Link href="/recettes">
+        <Link href="/famille">
           <Button variant="ghost" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Retour
@@ -85,48 +86,31 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
             </Button>
           </Link>
 
-          <Link href={`/recettes/${id}/edit`}>
-            <Button variant="outline" size="sm">
-              <Edit className="w-4 h-4 mr-2" />
-              Modifier
-            </Button>
-          </Link>
-
-          <DeleteRecipeButton
-            recipeId={id}
-            recipeTitle={recipeTyped.title}
-          />
+          <CopyRecipeButton recipeId={id} />
         </div>
       </div>
 
       {/* Image principale */}
-      <GenerateImageButton
-        recipeId={recipeTyped.id}
-        title={recipeTyped.title}
-        category={recipeTyped.category}
-        imageUrl={recipeTyped.image_url}
-      />
+      {recipeTyped.image_url && (
+        <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-accent/30">
+          <img
+            src={recipeTyped.image_url}
+            alt={recipeTyped.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       {/* Titre et badges */}
       <div className="space-y-3">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-4xl font-bold text-foreground">
-            {recipeTyped.title}
-          </h1>
-          <div className="flex-shrink-0 flex items-center gap-3">
-            {hasFamily && (
-              <ShareToggleButton
-                recipeId={recipeTyped.id}
-                isShared={recipeTyped.is_shared}
-                size="md"
-              />
-            )}
-            <FavoriteToggleButton
-              recipeId={recipeTyped.id}
-              isFavorite={recipeTyped.is_favorite}
-              size="md"
-            />
-          </div>
+        <h1 className="text-4xl font-bold text-foreground">
+          {recipeTyped.title}
+        </h1>
+
+        {/* Propriétaire */}
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <User className="w-4 h-4" />
+          <span className="text-sm">Recette de <strong>{ownerName}</strong></span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -139,11 +123,6 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
               {RECIPE_APPLIANCE_LABELS[recipeTyped.appliance]}
             </Badge>
           )}
-
-          <StatusToggleButton
-            recipeId={recipeTyped.id}
-            status={recipeTyped.status}
-          />
 
           {recipeTyped.metadata.difficulty && (
             <Badge variant="outline">

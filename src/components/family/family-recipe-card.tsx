@@ -1,47 +1,46 @@
 'use client'
 
 /**
- * Composant carte recette pour affichage en grille
+ * Carte recette familiale (lecture seule)
+ * Variante de recipe-card sans actions d'édition, avec nom du propriétaire
  */
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ImageIcon, Clock, Users } from 'lucide-react'
+import { ImageIcon, Clock, Users, User } from 'lucide-react'
 
 import type { Recipe } from '@/lib/types/recipe'
 import { RECIPE_CATEGORY_LABELS, RECIPE_APPLIANCE_LABELS, RECIPE_APPLIANCE_COLORS } from '@/lib/types/recipe'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { FavoriteToggleButton } from '@/components/recipes/favorite-toggle-button'
-import { StatusToggleButton } from '@/components/recipes/status-toggle-button'
-import { DeleteRecipeButton } from '@/components/recipes/delete-recipe-button'
 import { cn } from '@/lib/utils'
 
-interface RecipeCardProps {
+// Couleurs par catégorie (identiques à recipe-card)
+const CATEGORY_COLORS: Record<string, string> = {
+  apero: 'bg-orange-100 text-orange-800',
+  entree: 'bg-green-100 text-green-800',
+  plat: 'bg-blue-100 text-blue-800',
+  accompagnement: 'bg-purple-100 text-purple-800',
+  sauce: 'bg-yellow-100 text-yellow-800',
+  dessert: 'bg-pink-100 text-pink-800',
+  boisson: 'bg-cyan-100 text-cyan-800',
+  petit_dejeuner: 'bg-amber-100 text-amber-800',
+  gouter: 'bg-rose-100 text-rose-800',
+  pain_viennoiserie: 'bg-orange-100 text-orange-800',
+  conserve: 'bg-lime-100 text-lime-800',
+}
+
+interface FamilyRecipeCardProps {
   recipe: Recipe
+  ownerName: string
   className?: string
 }
 
-// Couleurs par catégorie
-const CATEGORY_COLORS: Record<string, string> = {
-  apero: 'bg-orange-100 text-orange-800 hover:bg-orange-200',
-  entree: 'bg-green-100 text-green-800 hover:bg-green-200',
-  plat: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
-  accompagnement: 'bg-purple-100 text-purple-800 hover:bg-purple-200',
-  sauce: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
-  dessert: 'bg-pink-100 text-pink-800 hover:bg-pink-200',
-  boisson: 'bg-cyan-100 text-cyan-800 hover:bg-cyan-200',
-  petit_dejeuner: 'bg-amber-100 text-amber-800 hover:bg-amber-200',
-  gouter: 'bg-rose-100 text-rose-800 hover:bg-rose-200',
-  pain_viennoiserie: 'bg-orange-100 text-orange-800 hover:bg-orange-200',
-  conserve: 'bg-lime-100 text-lime-800 hover:bg-lime-200',
-}
-
-export function RecipeCard({ recipe, className }: RecipeCardProps) {
+export function FamilyRecipeCard({ recipe, ownerName, className }: FamilyRecipeCardProps) {
   const categoryColor = CATEGORY_COLORS[recipe.category] || 'bg-gray-100 text-gray-800'
 
   return (
-    <Link href={`/recettes/${recipe.id}`}>
+    <Link href={`/famille/${recipe.id}`}>
       <Card className={cn(
         'overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer',
         className
@@ -62,27 +61,10 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
             </div>
           )}
 
-          {/* Toggle favori */}
-          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-1.5">
-            <FavoriteToggleButton
-              recipeId={recipe.id}
-              isFavorite={recipe.is_favorite}
-              size="sm"
-            />
-          </div>
-
-          {/* Supprimer */}
-          <div
-            className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-full"
-            onClick={(e) => e.preventDefault()}
-          >
-            <DeleteRecipeButton
-              recipeId={recipe.id}
-              recipeTitle={recipe.title}
-              variant="ghost"
-              size="icon"
-              iconOnly
-            />
+          {/* Badge propriétaire */}
+          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1.5">
+            <User className="w-3 h-3 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">{ownerName}</span>
           </div>
         </div>
 
@@ -93,7 +75,6 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
           </h3>
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {/* Temps total */}
             {(recipe.metadata.prep_time || recipe.metadata.cook_time) && (
               <span className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
@@ -101,7 +82,6 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
               </span>
             )}
 
-            {/* Portions */}
             {recipe.metadata.servings && (
               <span className="flex items-center gap-1">
                 <Users className="w-4 h-4" />
@@ -112,7 +92,7 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
         </CardContent>
 
         {/* Footer */}
-        <CardFooter className="px-4 pb-4 pt-0 justify-between">
+        <CardFooter className="px-4 pb-4 pt-0">
           <div className="flex flex-wrap gap-1">
             <Badge variant="secondary" className={categoryColor}>
               {RECIPE_CATEGORY_LABELS[recipe.category]}
@@ -122,16 +102,7 @@ export function RecipeCard({ recipe, className }: RecipeCardProps) {
                 {RECIPE_APPLIANCE_LABELS[recipe.appliance]}
               </Badge>
             )}
-            {recipe.is_shared && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                Partagée
-              </Badge>
-            )}
           </div>
-          <StatusToggleButton
-            recipeId={recipe.id}
-            status={recipe.status}
-          />
         </CardFooter>
       </Card>
     </Link>
