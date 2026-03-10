@@ -19,8 +19,8 @@ export default async function ImportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 text-pretty">Importer une recette</h1>
-        <p className="mt-1 text-gray-600">
+        <h1 className="text-3xl font-bold text-foreground text-pretty">Importer une recette</h1>
+        <p className="mt-1 text-muted-foreground">
           Importez une recette depuis un site web, du texte copié, ou une photo.
         </p>
       </div>

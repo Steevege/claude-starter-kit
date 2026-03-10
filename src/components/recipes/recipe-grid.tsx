@@ -13,7 +13,7 @@ export function RecipeGrid({ recipes }: RecipeGridProps) {
   if (recipes.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-        <div className="w-24 h-24 mb-4 text-gray-300">
+        <div className="w-24 h-24 mb-4 text-muted-foreground/40">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="96" height="96" aria-hidden="true">
             <path
               strokeLinecap="round"
@@ -23,10 +23,10 @@ export function RecipeGrid({ recipes }: RecipeGridProps) {
             />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        <h3 className="text-xl font-semibold text-foreground mb-2">
           Aucune recette trouvée
         </h3>
-        <p className="text-gray-600 max-w-md">
+        <p className="text-muted-foreground max-w-md">
           Commencez par ajouter votre première recette pour la voir apparaître ici.
         </p>
       </div>

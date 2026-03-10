@@ -41,8 +41,8 @@ export default async function FamillePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 text-pretty">Famille</h1>
-          <p className="mt-1 text-gray-600">
+          <h1 className="text-3xl font-bold text-foreground text-pretty">Famille</h1>
+          <p className="mt-1 text-muted-foreground">
             Partagez vos recettes avec votre famille
           </p>
         </div>
@@ -101,8 +101,8 @@ export default async function FamillePage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Famille</h1>
-        <p className="mt-1 text-gray-600">
+        <h1 className="text-3xl font-bold text-foreground">Famille</h1>
+        <p className="mt-1 text-muted-foreground">
           {recipesTyped.length} {recipesTyped.length > 1 ? 'recettes partagées' : 'recette partagée'}
         </p>
       </div>

@@ -86,7 +86,7 @@ export function ImportTabs() {
         <Card>
           <CardHeader>
             <CardTitle>Vérifiez et complétez la recette</CardTitle>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               La recette a été pré-remplie automatiquement. Vérifiez les informations et corrigez si nécessaire.
             </p>
           </CardHeader>
@@ -109,7 +109,7 @@ export function ImportTabs() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Onglets */}
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-lg" role="tablist">
+        <div className="flex gap-1 p-1 bg-muted rounded-lg" role="tablist">
           {TABS.map(({ mode: tabMode, label, icon }) => (
             <button
               key={tabMode}
@@ -118,8 +118,8 @@ export function ImportTabs() {
               onClick={() => setMode(tabMode)}
               className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                 mode === tabMode
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-white text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {icon}

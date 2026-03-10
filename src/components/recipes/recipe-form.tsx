@@ -336,7 +336,7 @@ export function RecipeForm({ defaultValues, recipeId }: RecipeFormProps) {
                   rows={4}
                   className="font-mono text-sm"
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Note: Parsing avancé à venir. Pour l'instant, saisir un ingrédient simple par ligne.
                 </p>
               </div>

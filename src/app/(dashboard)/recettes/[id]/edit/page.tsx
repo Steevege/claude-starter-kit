@@ -67,8 +67,8 @@ export default async function RecipeEditPage({ params }: RecipeEditPageProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Modifier la recette</h1>
-          <p className="mt-1 text-gray-600">
+          <h1 className="text-3xl font-bold text-foreground">Modifier la recette</h1>
+          <p className="mt-1 text-muted-foreground">
             {recipeTyped.title}
           </p>
         </div>

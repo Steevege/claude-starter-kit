@@ -92,8 +92,8 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 text-pretty">Mes Recettes</h1>
-          <p className="mt-1 text-gray-600">
+          <h1 className="text-3xl font-bold text-foreground text-pretty">Mes Recettes</h1>
+          <p className="mt-1 text-muted-foreground">
             {recipesTyped.length} {recipesTyped.length > 1 ? 'recettes' : 'recette'}
           </p>
         </div>

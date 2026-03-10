@@ -30,7 +30,7 @@ export default async function NewVideoPage() {
         </Button>
       </Link>
 
-      <h1 className="text-3xl font-bold text-gray-900">Ajouter une vidéo</h1>
+      <h1 className="text-3xl font-bold text-foreground">Ajouter une vidéo</h1>
 
       <VideoForm />
     </div>

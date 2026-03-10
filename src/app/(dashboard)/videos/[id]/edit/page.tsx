@@ -65,7 +65,7 @@ export default async function EditVideoPage({ params }: EditVideoPageProps) {
         </Button>
       </Link>
 
-      <h1 className="text-3xl font-bold text-gray-900">Modifier la vidéo</h1>
+      <h1 className="text-3xl font-bold text-foreground">Modifier la vidéo</h1>
 
       <VideoForm recipeId={id} defaultValues={defaultValues} />
     </div>

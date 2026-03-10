@@ -14,11 +14,11 @@ export function VideoGrid({ videos }: VideoGridProps) {
   if (videos.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-        <Video className="w-16 h-16 text-gray-300 mb-4" aria-hidden="true" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        <Video className="w-16 h-16 text-muted-foreground/40 mb-4" aria-hidden="true" />
+        <h3 className="text-xl font-semibold text-foreground mb-2">
           Aucune vidéo enregistrée
         </h3>
-        <p className="text-gray-600 max-w-md">
+        <p className="text-muted-foreground max-w-md">
           Ajoutez vos premières recettes vidéo (Instagram, TikTok, YouTube...) pour les retrouver ici.
         </p>
       </div>
