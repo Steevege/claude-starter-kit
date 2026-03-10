@@ -74,18 +74,18 @@ export default async function VideosPage({ searchParams }: VideosPageProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mes Vidéos</h1>
+          <h1 className="text-3xl font-bold text-gray-900 text-pretty">Mes Vidéos</h1>
           <p className="mt-1 text-gray-600">
             {videosTyped.length} {videosTyped.length > 1 ? 'vidéos' : 'vidéo'}
           </p>
         </div>
 
-        <Link href="/videos/new">
-          <Button>
+        <Button asChild>
+          <Link href="/videos/new">
             <Plus className="w-4 h-4 mr-2" />
             Ajouter une vidéo
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       <Separator />

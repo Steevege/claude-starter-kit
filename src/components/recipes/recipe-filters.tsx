@@ -106,10 +106,12 @@ export function RecipeFilters() {
       {/* Recherche */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
           <Input
             type="text"
-            placeholder="Rechercher une recette..."
+            name="search"
+            aria-label="Rechercher une recette"
+            placeholder="Rechercher une recette\u2026"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className="pl-10"
@@ -135,14 +137,19 @@ export function RecipeFilters() {
           {CATEGORIES.map((category) => {
             const isActive = currentCategory === category
             return (
-              <Badge
+              <button
                 key={category}
-                variant={isActive ? 'default' : 'outline'}
-                className="cursor-pointer hover:bg-accent"
+                type="button"
                 onClick={() => handleCategoryClick(category)}
+                className="inline-flex items-center"
               >
-                {RECIPE_CATEGORY_LABELS[category]}
-              </Badge>
+                <Badge
+                  variant={isActive ? 'default' : 'outline'}
+                  className="cursor-pointer hover:bg-accent"
+                >
+                  {RECIPE_CATEGORY_LABELS[category]}
+                </Badge>
+              </button>
             )
           })}
         </div>
@@ -155,14 +162,19 @@ export function RecipeFilters() {
           {RECIPE_APPLIANCES.map((appliance) => {
             const isActive = currentAppliance === appliance
             return (
-              <Badge
+              <button
                 key={appliance}
-                variant={isActive ? 'default' : 'outline'}
-                className="cursor-pointer hover:bg-accent"
+                type="button"
                 onClick={() => handleApplianceClick(appliance)}
+                className="inline-flex items-center"
               >
-                {RECIPE_APPLIANCE_LABELS[appliance]}
-              </Badge>
+                <Badge
+                  variant={isActive ? 'default' : 'outline'}
+                  className="cursor-pointer hover:bg-accent"
+                >
+                  {RECIPE_APPLIANCE_LABELS[appliance]}
+                </Badge>
+              </button>
             )
           })}
         </div>
@@ -175,14 +187,19 @@ export function RecipeFilters() {
           {RECIPE_STATUSES.map((status) => {
             const isActive = currentStatus === status
             return (
-              <Badge
+              <button
                 key={status}
-                variant={isActive ? 'default' : 'outline'}
-                className="cursor-pointer hover:bg-accent"
+                type="button"
                 onClick={() => handleStatusClick(status)}
+                className="inline-flex items-center"
               >
-                {RECIPE_STATUS_LABELS[status]}
-              </Badge>
+                <Badge
+                  variant={isActive ? 'default' : 'outline'}
+                  className="cursor-pointer hover:bg-accent"
+                >
+                  {RECIPE_STATUS_LABELS[status]}
+                </Badge>
+              </button>
             )
           })}
         </div>

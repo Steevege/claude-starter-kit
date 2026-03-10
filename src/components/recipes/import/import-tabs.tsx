@@ -109,12 +109,14 @@ export function ImportTabs() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Onglets */}
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+        <div className="flex gap-1 p-1 bg-gray-100 rounded-lg" role="tablist">
           {TABS.map(({ mode: tabMode, label, icon }) => (
             <button
               key={tabMode}
+              role="tab"
+              aria-selected={mode === tabMode}
               onClick={() => setMode(tabMode)}
-              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                 mode === tabMode
                   ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-gray-500 hover:text-gray-700'

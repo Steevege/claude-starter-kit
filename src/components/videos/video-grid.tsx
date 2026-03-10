@@ -14,7 +14,7 @@ export function VideoGrid({ videos }: VideoGridProps) {
   if (videos.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-        <Video className="w-16 h-16 text-gray-300 mb-4" />
+        <Video className="w-16 h-16 text-gray-300 mb-4" aria-hidden="true" />
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           Aucune vidéo enregistrée
         </h3>

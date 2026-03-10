@@ -41,7 +41,7 @@ export default async function FamillePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Famille</h1>
+          <h1 className="text-3xl font-bold text-gray-900 text-pretty">Famille</h1>
           <p className="mt-1 text-gray-600">
             Partagez vos recettes avec votre famille
           </p>
@@ -67,27 +67,25 @@ export default async function FamillePage() {
     )
   }
 
-  // L'utilisateur a un groupe : charger les données
-  const { data: group } = await supabase
-    .from('family_groups')
-    .select('*')
-    .eq('id', membership.group_id)
-    .single()
-
-  const { data: members } = await supabase
-    .from('family_members')
-    .select('*')
-    .eq('group_id', membership.group_id)
-    .order('joined_at', { ascending: true })
-
-  // Charger les recettes partagées des AUTRES membres
-  // La RLS nous donne accès aux recettes partagées de la famille
-  const { data: sharedRecipes } = await supabase
-    .from('recipes')
-    .select('*')
-    .eq('is_shared', true)
-    .neq('user_id', user.id)
-    .order('updated_at', { ascending: false })
+  // L'utilisateur a un groupe : charger les données en parallèle
+  const [{ data: group }, { data: members }, { data: sharedRecipes }] = await Promise.all([
+    supabase
+      .from('family_groups')
+      .select('*')
+      .eq('id', membership.group_id)
+      .single(),
+    supabase
+      .from('family_members')
+      .select('*')
+      .eq('group_id', membership.group_id)
+      .order('joined_at', { ascending: true }),
+    supabase
+      .from('recipes')
+      .select('*')
+      .eq('is_shared', true)
+      .neq('user_id', user.id)
+      .order('updated_at', { ascending: false }),
+  ])
 
   const groupTyped = group as FamilyGroup
   const membersTyped = (members || []) as FamilyMember[]
@@ -125,7 +123,7 @@ export default async function FamillePage() {
       {/* Grille des recettes partagées */}
       {recipesTyped.length === 0 ? (
         <div className="text-center py-12">
-          <Users className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
+          <Users className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" aria-hidden="true" />
           <h3 className="text-lg font-medium text-muted-foreground">
             Aucune recette partagée
           </h3>

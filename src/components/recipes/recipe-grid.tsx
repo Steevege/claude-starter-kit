@@ -14,7 +14,7 @@ export function RecipeGrid({ recipes }: RecipeGridProps) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
         <div className="w-24 h-24 mb-4 text-gray-300">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="96" height="96" aria-hidden="true">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

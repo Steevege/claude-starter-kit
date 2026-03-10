@@ -39,7 +39,7 @@ export default async function FavorisPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Mes Favoris</h1>
+        <h1 className="text-3xl font-bold text-gray-900 text-pretty">Mes Favoris</h1>
         <p className="mt-1 text-gray-600">
           {recipesTyped.length} {recipesTyped.length > 1 ? 'recettes favorites' : 'recette favorite'}
         </p>
@@ -50,7 +50,7 @@ export default async function FavorisPage() {
       {/* Grille de recettes ou message vide */}
       {recipesTyped.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <Heart className="w-16 h-16 text-gray-300 mb-4" />
+          <Heart className="w-16 h-16 text-gray-300 mb-4" aria-hidden="true" />
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
             Aucun favori pour l'instant
           </h3>

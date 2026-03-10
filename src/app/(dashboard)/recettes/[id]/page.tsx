@@ -41,13 +41,22 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
   // Await params (Next.js 15+)
   const { id } = await params
 
-  // Récupérer la recette
-  const { data: recipe, error } = await supabase
-    .from('recipes')
-    .select('*')
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .single()
+  // Récupérer la recette et le membership famille en parallèle
+  const [recipeResult, membershipResult] = await Promise.all([
+    supabase
+      .from('recipes')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single(),
+    supabase
+      .from('family_members')
+      .select('id')
+      .eq('user_id', user.id)
+      .single(),
+  ])
+
+  const { data: recipe, error } = recipeResult
 
   if (error || !recipe) {
     notFound()
@@ -60,14 +69,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
     redirect(`/videos/${id}/edit`)
   }
 
-  // Vérifier si l'utilisateur est dans un groupe familial
-  const { data: membership } = await supabase
-    .from('family_members')
-    .select('id')
-    .eq('user_id', user.id)
-    .single()
-
-  const hasFamily = !!membership
+  const hasFamily = !!membershipResult.data
 
   const totalTime = (recipeTyped.metadata.prep_time || 0) + (recipeTyped.metadata.cook_time || 0)
 

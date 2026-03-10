@@ -92,25 +92,25 @@ export default async function RecettesPage({ searchParams }: RecettesPageProps) 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mes Recettes</h1>
+          <h1 className="text-3xl font-bold text-gray-900 text-pretty">Mes Recettes</h1>
           <p className="mt-1 text-gray-600">
             {recipesTyped.length} {recipesTyped.length > 1 ? 'recettes' : 'recette'}
           </p>
         </div>
 
         <div className="flex gap-2">
-          <Link href="/import">
-            <Button variant="outline">
+          <Button variant="outline" asChild>
+            <Link href="/import">
               <Download className="w-4 h-4 mr-2" />
               Importer
-            </Button>
-          </Link>
-          <Link href="/recettes/new">
-            <Button>
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/recettes/new">
               <Plus className="w-4 h-4 mr-2" />
               Nouvelle recette
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
 
