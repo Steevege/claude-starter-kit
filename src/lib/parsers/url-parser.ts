@@ -9,6 +9,7 @@
 import * as cheerio from 'cheerio'
 import type { ParsedRecipe, ParseResult } from './types'
 import type { RecipeCategory, RecipeAppliance } from '@/lib/types/recipe'
+import { decodeHtmlEntities } from './decode-entities'
 
 // Mapping catégories anglais/français vers nos catégories
 const CATEGORY_MAP: Record<string, RecipeCategory> = {
@@ -85,12 +86,12 @@ function extractInstructions(instructions: unknown): string {
 
   // Format 1 : tableau de strings
   if (Array.isArray(instructions) && typeof instructions[0] === 'string') {
-    return instructions.join('\n')
+    return decodeHtmlEntities(instructions.join('\n'))
   }
 
   // Format 2 : tableau de HowToStep
   if (Array.isArray(instructions) && typeof instructions[0] === 'object') {
-    return instructions
+    const joined = instructions
       .map((step: { text?: string; '@type'?: string; itemListElement?: { text?: string }[] }) => {
         // HowToStep
         if (step.text) return step.text
@@ -102,11 +103,12 @@ function extractInstructions(instructions: unknown): string {
       })
       .filter(Boolean)
       .join('\n')
+    return decodeHtmlEntities(joined)
   }
 
   // Format 3 : string simple
   if (typeof instructions === 'string') {
-    return instructions
+    return decodeHtmlEntities(instructions)
   }
 
   return ''
@@ -118,9 +120,10 @@ function extractInstructions(instructions: unknown): string {
 function extractIngredients(ingredients: unknown): string {
   if (!ingredients) return ''
   if (Array.isArray(ingredients)) {
-    return ingredients.map(i => typeof i === 'string' ? i : '').filter(Boolean).join('\n')
+    const joined = ingredients.map(i => typeof i === 'string' ? i : '').filter(Boolean).join('\n')
+    return decodeHtmlEntities(joined)
   }
-  if (typeof ingredients === 'string') return ingredients
+  if (typeof ingredients === 'string') return decodeHtmlEntities(ingredients)
   return ''
 }
 
@@ -213,7 +216,7 @@ export function parseRecipeFromHtml(html: string, sourceUrl: string): ParseResul
         ].join(' ')
 
         const parsed: ParsedRecipe = {
-          title: String(recipe.name || '').trim(),
+          title: decodeHtmlEntities(String(recipe.name || '').trim()),
           category: mapCategory(recipe.recipeCategory as string | string[] | undefined),
           appliance: detectAppliance(recipeText),
           ingredients_text: extractIngredients(recipe.recipeIngredient),

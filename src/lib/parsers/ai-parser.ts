@@ -9,6 +9,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import type { ParsedRecipe, ParseResult } from './types'
+import { decodeHtmlEntities } from './decode-entities'
 
 const MODEL = 'claude-haiku-4-5-20251001'
 
@@ -220,7 +221,7 @@ export async function parseRecipeFromHtmlWithAI(
     const client = getClient()
 
     // Nettoyer le HTML (garder seulement le texte pertinent, max ~8000 chars)
-    const cleanedHtml = html
+    const stripped = html
       .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<nav[\s\S]*?<\/nav>/gi, '')
@@ -228,21 +229,8 @@ export async function parseRecipeFromHtmlWithAI(
       .replace(/<header[\s\S]*?<\/header>/gi, '')
       .replace(/<aside[\s\S]*?<\/aside>/gi, '')
       .replace(/<[^>]+>/g, ' ')
-      // Décoder les entités HTML courantes (apostrophes, accents, etc.)
-      .replace(/&#(\d+);/g, (_m, code) => String.fromCharCode(Number(code)))
-      .replace(/&#x([0-9a-fA-F]+);/g, (_m, hex) => String.fromCharCode(parseInt(hex, 16)))
-      .replace(/&rsquo;|&lsquo;/g, "'")
-      .replace(/&rdquo;|&ldquo;/g, '"')
-      .replace(/&eacute;/g, 'é').replace(/&egrave;/g, 'è').replace(/&ecirc;/g, 'ê').replace(/&euml;/g, 'ë')
-      .replace(/&agrave;/g, 'à').replace(/&acirc;/g, 'â')
-      .replace(/&ocirc;/g, 'ô').replace(/&ouml;/g, 'ö')
-      .replace(/&ucirc;/g, 'û').replace(/&ugrave;/g, 'ù').replace(/&uuml;/g, 'ü')
-      .replace(/&icirc;/g, 'î').replace(/&iuml;/g, 'ï')
-      .replace(/&ccedil;/g, 'ç')
-      .replace(/&amp;/g, '&')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+
+    const cleanedHtml = decodeHtmlEntities(stripped)
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, 8000)
